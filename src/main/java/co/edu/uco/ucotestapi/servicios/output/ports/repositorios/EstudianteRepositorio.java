@@ -1,0 +1,9 @@
+package co.edu.uco.ucotestapi.servicios.output.ports.repositorios;
+
+import java.util.UUID;
+
+import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.entidades.EstudianteEntidad;
+
+public interface EstudianteRepositorio extends CrearRepositorio<EstudianteEntidad>, ConsultarRepositorio<UUID, EstudianteEntidad>, ActualizarRepositorio<EstudianteEntidad>, EliminarRepositorio<UUID> {
+	
+}
