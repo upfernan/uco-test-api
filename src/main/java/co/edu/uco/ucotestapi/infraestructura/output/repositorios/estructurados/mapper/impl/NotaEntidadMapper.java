@@ -20,7 +20,7 @@ public class NotaEntidadMapper implements EntidadMapper<NotaEntidad, NotaEntidad
 	@Override
 	public NotaEntidad ConvertirAEntidad(NotaEntidadJPA entidadJPA) {
 		if (entidadJPA == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad JPA de nota no puede ser nula");
 		}
 		var entidad = new NotaEntidad();
 		entidad.setId(entidadJPA.getId());
@@ -34,7 +34,7 @@ public class NotaEntidadMapper implements EntidadMapper<NotaEntidad, NotaEntidad
 	@Override
 	public NotaEntidadJPA ConvertirAEntidadJPA(NotaEntidad entidad) {
 		if (entidad == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad de nota no puede ser nula");
 		}
 		var entidadJPA = new NotaEntidadJPA();
 		entidadJPA.setId(entidad.getId());

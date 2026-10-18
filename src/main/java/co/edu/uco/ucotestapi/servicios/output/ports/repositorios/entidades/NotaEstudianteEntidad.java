@@ -1,13 +1,12 @@
 package co.edu.uco.ucotestapi.servicios.output.ports.repositorios.entidades;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 public class NotaEstudianteEntidad {
 	private UUID id;
 	private EstudianteGrupoEntidad estudianteGrupo;
 	private NotaEntidad nota;
-	private BigDecimal valor;
+	private int valor;
 
 	public UUID getId() {
 		return id;
@@ -33,11 +32,11 @@ public class NotaEstudianteEntidad {
 		this.nota = nota;
 	}
 
-	public BigDecimal getValor() {
+	public int getValor() {
 		return valor;
 	}
 
-	public void setValor(BigDecimal valor) {
+	public void setValor(int valor) {
 		this.valor = valor;
 	}
 

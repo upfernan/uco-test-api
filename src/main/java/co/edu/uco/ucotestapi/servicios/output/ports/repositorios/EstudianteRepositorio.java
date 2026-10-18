@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.entidades.EstudianteEntidad;
 
-public interface EstudianteRepositorio extends CrearRepositorio<EstudianteEntidad>, ConsultarRepositorio<UUID, EstudianteEntidad>, ActualizarRepositorio<EstudianteEntidad>, EliminarRepositorio<UUID> {
+public interface EstudianteRepositorio extends CrearRepositorio<EstudianteEntidad>, ConsultarRepositorio<UUID, EstudianteEntidad>, ModificarRepositorio<UUID, EstudianteEntidad>, EliminarRepositorio<UUID> {
 	
 }

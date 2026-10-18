@@ -1,11 +1,12 @@
 package co.edu.uco.ucotestapi.infraestructura.output.repositorios.estructurados.jpa.entidades;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 
@@ -15,11 +16,17 @@ public class NotaEstudianteEntidadJPA {
 	@Id
 	@Column(name = "id")
 	private UUID id;
+
+	@ManyToOne
+	@JoinColumn(name = "id_estudiante_grupo")
 	private EstudianteGrupoEntidadJPA estudianteGrupo;
+
+	@ManyToOne
+	@JoinColumn(name = "id_nota")
 	private NotaEntidadJPA nota;
 
-	@Column(name = "valor", precision = 3, scale = 2)
-	private BigDecimal valor;
+	@Column(name = "valor")
+	private int valor;
 
 	public UUID getId() {
 		return id;
@@ -45,11 +52,11 @@ public class NotaEstudianteEntidadJPA {
 		this.nota = nota;
 	}
 
-	public BigDecimal getValor() {
+	public int getValor() {
 		return valor;
 	}
 
-	public void setValor(BigDecimal valor) {
+	public void setValor(int valor) {
 		this.valor = valor;
 	}
 

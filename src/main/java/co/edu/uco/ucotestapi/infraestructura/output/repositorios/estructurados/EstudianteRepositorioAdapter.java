@@ -34,11 +34,14 @@ public class EstudianteRepositorioAdapter implements EstudianteRepositorio {
 	}
 
 	@Override
+	public List<EstudianteEntidad> consultarTodos() {
+		return estudianteJPARepositorio.findAll().stream().map(mapper::ConvertirAEntidad).toList();
+	}
+
+	@Override
 	public List<EstudianteEntidad> consultar(EstudianteEntidad filtro) {
-		var resultados = (filtro == null)
-				? estudianteJPARepositorio.findAll()
-				: estudianteJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)));
-		return resultados.stream().map(mapper::ConvertirAEntidad).toList();
+		return estudianteJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)))
+				.stream().map(mapper::ConvertirAEntidad).toList();
 	}
 
 	@Override
@@ -52,8 +55,9 @@ public class EstudianteRepositorioAdapter implements EstudianteRepositorio {
 	}
 
 	@Override
-	public void actualizar(EstudianteEntidad entidad) {
+	public void modificar(UUID id, EstudianteEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
+		entidadJPA.setId(id);
 		estudianteJPARepositorio.save(entidadJPA);
 	}
 

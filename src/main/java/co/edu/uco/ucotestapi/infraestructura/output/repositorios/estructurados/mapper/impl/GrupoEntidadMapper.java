@@ -20,7 +20,7 @@ public class GrupoEntidadMapper implements EntidadMapper<GrupoEntidad, GrupoEnti
 	@Override
 	public GrupoEntidad ConvertirAEntidad(GrupoEntidadJPA entidadJPA) {
 		if (entidadJPA == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad JPA de grupo no puede ser nula");
 		}
 		var entidad = new GrupoEntidad();
 		entidad.setId(entidadJPA.getId());
@@ -34,7 +34,7 @@ public class GrupoEntidadMapper implements EntidadMapper<GrupoEntidad, GrupoEnti
 	@Override
 	public GrupoEntidadJPA ConvertirAEntidadJPA(GrupoEntidad entidad) {
 		if (entidad == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad de grupo no puede ser nula");
 		}
 		var entidadJPA = new GrupoEntidadJPA();
 		entidadJPA.setId(entidad.getId());

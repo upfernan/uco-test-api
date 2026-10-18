@@ -31,11 +31,14 @@ public class NotaRepositorioAdapter implements NotaRepositorio {
 	}
 
 	@Override
+	public List<NotaEntidad> consultarTodos() {
+		return notaJPARepositorio.findAll().stream().map(mapper::ConvertirAEntidad).toList();
+	}
+
+	@Override
 	public List<NotaEntidad> consultar(NotaEntidad filtro) {
-		var resultados = (filtro == null)
-				? notaJPARepositorio.findAll()
-				: notaJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)));
-		return resultados.stream().map(mapper::ConvertirAEntidad).toList();
+		return notaJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)))
+				.stream().map(mapper::ConvertirAEntidad).toList();
 	}
 
 	@Override
@@ -49,8 +52,9 @@ public class NotaRepositorioAdapter implements NotaRepositorio {
 	}
 
 	@Override
-	public void actualizar(NotaEntidad entidad) {
+	public void modificar(UUID id, NotaEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
+		entidadJPA.setId(id);
 		notaJPARepositorio.save(entidadJPA);
 	}
 

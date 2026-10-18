@@ -31,11 +31,14 @@ public class GrupoRepositorioAdapter implements GrupoRepositorio {
 	}
 
 	@Override
+	public List<GrupoEntidad> consultarTodos() {
+		return grupoJPARepositorio.findAll().stream().map(mapper::ConvertirAEntidad).toList();
+	}
+
+	@Override
 	public List<GrupoEntidad> consultar(GrupoEntidad filtro) {
-		var resultados = (filtro == null)
-				? grupoJPARepositorio.findAll()
-				: grupoJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)));
-		return resultados.stream().map(mapper::ConvertirAEntidad).toList();
+		return grupoJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)))
+				.stream().map(mapper::ConvertirAEntidad).toList();
 	}
 
 	@Override
@@ -49,8 +52,9 @@ public class GrupoRepositorioAdapter implements GrupoRepositorio {
 	}
 
 	@Override
-	public void actualizar(GrupoEntidad entidad) {
+	public void modificar(UUID id, GrupoEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
+		entidadJPA.setId(id);
 		grupoJPARepositorio.save(entidadJPA);
 	}
 

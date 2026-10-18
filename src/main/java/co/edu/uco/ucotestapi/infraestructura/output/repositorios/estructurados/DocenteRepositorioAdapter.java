@@ -31,11 +31,14 @@ public class DocenteRepositorioAdapter implements DocenteRepositorio {
 	}
 
 	@Override
+	public List<DocenteEntidad> consultarTodos() {
+		return docenteJPARepositorio.findAll().stream().map(mapper::ConvertirAEntidad).toList();
+	}
+
+	@Override
 	public List<DocenteEntidad> consultar(DocenteEntidad filtro) {
-		var resultados = (filtro == null)
-				? docenteJPARepositorio.findAll()
-				: docenteJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)));
-		return resultados.stream().map(mapper::ConvertirAEntidad).toList();
+		return docenteJPARepositorio.findAll(Example.of(mapper.ConvertirAEntidadJPA(filtro)))
+				.stream().map(mapper::ConvertirAEntidad).toList();
 	}
 
 	@Override
@@ -49,8 +52,9 @@ public class DocenteRepositorioAdapter implements DocenteRepositorio {
 	}
 
 	@Override
-	public void actualizar(DocenteEntidad entidad) {
+	public void modificar(UUID id, DocenteEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
+		entidadJPA.setId(id);
 		docenteJPARepositorio.save(entidadJPA);
 	}
 

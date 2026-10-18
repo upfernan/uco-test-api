@@ -13,7 +13,7 @@ public class DocenteEntidadMapper implements EntidadMapper<DocenteEntidad, Docen
 	@Override
 	public DocenteEntidad ConvertirAEntidad(DocenteEntidadJPA entidadJPA) {
 		if (entidadJPA == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad JPA de docente no puede ser nula");
 		}
 		var entidad = new DocenteEntidad();
 		entidad.setId(entidadJPA.getId());
@@ -24,7 +24,7 @@ public class DocenteEntidadMapper implements EntidadMapper<DocenteEntidad, Docen
 	@Override
 	public DocenteEntidadJPA ConvertirAEntidadJPA(DocenteEntidad entidad) {
 		if (entidad == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad de docente no puede ser nula");
 		}
 		var entidadJPA = new DocenteEntidadJPA();
 		entidadJPA.setId(entidad.getId());

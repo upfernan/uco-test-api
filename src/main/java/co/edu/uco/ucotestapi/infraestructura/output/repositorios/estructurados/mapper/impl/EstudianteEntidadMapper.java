@@ -14,7 +14,7 @@ public class EstudianteEntidadMapper implements EntidadMapper<EstudianteEntidad,
 	public EstudianteEntidad ConvertirAEntidad(EstudianteEntidadJPA entidadJPA) {
 		// Recomendacion: usar un datamapper o MapStruct
 		if (entidadJPA == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad JPA de estudiante no puede ser nula");
 		}
 		var entidad = new EstudianteEntidad();
 		entidad.setId(entidadJPA.getId());
@@ -24,7 +24,7 @@ public class EstudianteEntidadMapper implements EntidadMapper<EstudianteEntidad,
 	@Override
 	public EstudianteEntidadJPA ConvertirAEntidadJPA(EstudianteEntidad entidad) {
 		if (entidad == null) {
-			return null;
+			throw new IllegalArgumentException("La entidad de estudiante no puede ser nula");
 		}
 		var entidadJPA = new EstudianteEntidadJPA();
 		entidadJPA.setId(entidad.getId());
