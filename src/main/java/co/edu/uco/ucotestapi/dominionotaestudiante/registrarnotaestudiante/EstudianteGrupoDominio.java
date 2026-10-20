@@ -3,7 +3,10 @@ package co.edu.uco.ucotestapi.dominionotaestudiante.registrarnotaestudiante;
 import java.util.Objects;
 import java.util.UUID;
 
+import co.edu.uco.ucotestapi.dominio.excepciones.ReglaNegocioException;
+import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CodigoMensaje;
 import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.GrupoEstudianteRepositorio;
+import co.edu.uco.ucotestapi.transversal.utilitario.UtilUUID;
 
 public class EstudianteGrupoDominio {
 	private UUID idEstudiante;
@@ -11,18 +14,18 @@ public class EstudianteGrupoDominio {
 	private GrupoEstudianteRepositorio grupoEstudianteRepositorio;
 
 	public EstudianteGrupoDominio(UUID idEstudiante, UUID idGrupo, GrupoEstudianteRepositorio grupoEstudianteRepositorio) {
-		this.idEstudiante = idEstudiante;
-		this.idGrupo = idGrupo;
+		this.idEstudiante = UtilUUID.obtenerValorDefecto(idEstudiante);
+		this.idGrupo = UtilUUID.obtenerValorDefecto(idGrupo);
 		this.grupoEstudianteRepositorio = Objects.requireNonNull(grupoEstudianteRepositorio, "El repositorio de estudiantes por grupo es obligatorio");
 	}
 
 	// Regla 1
 	public void validarEstudianteExistaEnGrupo() {
-		if (idEstudiante == null || idGrupo == null) {
-			throw new IllegalArgumentException("El ID del estudiante y el ID del grupo no pueden ser nulos");
+		if (UtilUUID.esValorDefecto(idEstudiante) || UtilUUID.esValorDefecto(idGrupo)) {
+			throw new ReglaNegocioException(CodigoMensaje.ESTUDIANTE_GRUPO_IDS_NULOS);
 		}
 		if (!grupoEstudianteRepositorio.existePorEstudianteYGrupo(idEstudiante, idGrupo)) {
-			throw new IllegalArgumentException("El estudiante con ID " + idEstudiante + " no pertenece al grupo " + idGrupo);
+			throw new ReglaNegocioException(CodigoMensaje.ESTUDIANTE_NO_PERTENECE_AL_GRUPO, idEstudiante, idGrupo);
 		}
 	}
 

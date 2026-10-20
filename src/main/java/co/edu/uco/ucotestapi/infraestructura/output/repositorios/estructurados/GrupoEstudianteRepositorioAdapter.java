@@ -57,6 +57,11 @@ public class GrupoEstudianteRepositorioAdapter implements GrupoEstudianteReposit
 	}
 
 	@Override
+	public Optional<EstudianteGrupoEntidad> consultarPorEstudianteYGrupo(UUID idEstudiante, UUID idGrupo) {
+		return estudianteGrupoJPARepositorio.findByEstudiante_IdAndGrupo_Id(idEstudiante, idGrupo).map(mapper::ConvertirAEntidad);
+	}
+
+	@Override
 	public void modificar(UUID id, EstudianteGrupoEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
 		entidadJPA.setId(id);

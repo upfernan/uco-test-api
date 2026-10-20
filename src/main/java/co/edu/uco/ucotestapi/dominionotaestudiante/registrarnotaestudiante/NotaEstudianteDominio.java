@@ -4,7 +4,13 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
+import co.edu.uco.ucotestapi.dominio.excepciones.ReglaNegocioException;
+import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CodigoMensaje;
 import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.NotaEstudianteRepositorio;
+
+import co.edu.uco.ucotestapi.transversal.utilitario.UtilNumero;
+import co.edu.uco.ucotestapi.transversal.utilitario.UtilObjeto;
+import co.edu.uco.ucotestapi.transversal.utilitario.UtilUUID;
 
 public class NotaEstudianteDominio {
 	private static final int VALOR_MINIMO = 0;
@@ -17,37 +23,37 @@ public class NotaEstudianteDominio {
 	private NotaEstudianteRepositorio notaEstudianteRepositorio;
 
 	public NotaEstudianteDominio(UUID idEstudiante, UUID idNota, int valor, NotaEstudianteRepositorio notaEstudianteRepositorio) {
-		this.idEstudiante = idEstudiante;
-		this.idNota = idNota;
+		this.idEstudiante = UtilUUID.obtenerValorDefecto(idEstudiante);
+		this.idNota = UtilUUID.obtenerValorDefecto(idNota);
 		this.valor = valor;
 		this.notaEstudianteRepositorio = Objects.requireNonNull(notaEstudianteRepositorio, "El repositorio de notas por estudiante es obligatorio");
 	}
 
 	// Regla 10: convierte la nota real (ej. 3.5) al valor escalado que se guarda (ej. 350)
 	public static int escalarValor(BigDecimal valorReal) {
-		if (valorReal == null) {
-			throw new IllegalArgumentException("El valor de la nota no puede ser nulo");
+		if (UtilObjeto.esNulo(valorReal)) {
+			throw new ReglaNegocioException(CodigoMensaje.VALOR_NOTA_NULO);
 		}
 		if (valorReal.stripTrailingZeros().scale() > MAXIMO_DECIMALES) {
-			throw new IllegalArgumentException("El valor de la nota debe tener maximo dos decimales");
+			throw new ReglaNegocioException(CodigoMensaje.VALOR_NOTA_MAXIMO_DOS_DECIMALES);
 		}
 		return valorReal.movePointRight(MAXIMO_DECIMALES).intValue();
 	}
 
 	// Regla 6
 	public void validarNotaNoRegistrada() {
-		if (idEstudiante == null || idNota == null) {
-			throw new IllegalArgumentException("El ID del estudiante y el ID de la nota no pueden ser nulos");
+		if (UtilUUID.esValorDefecto(idEstudiante) || UtilUUID.esValorDefecto(idNota)) {
+			throw new ReglaNegocioException(CodigoMensaje.NOTA_ESTUDIANTE_IDS_NULOS);
 		}
 		if (notaEstudianteRepositorio.existePorEstudianteYNota(idEstudiante, idNota)) {
-			throw new IllegalArgumentException("El estudiante con ID " + idEstudiante + " ya tiene registrada la nota " + idNota);
+			throw new ReglaNegocioException(CodigoMensaje.NOTA_YA_REGISTRADA, idEstudiante, idNota);
 		}
 	}
 
 	// Regla 9: el valor esta escalado, 0 a 500 equivale a 0.00 a 5.00
 	public void validarValorEnRango() {
-		if (valor < VALOR_MINIMO || valor > VALOR_MAXIMO) {
-			throw new IllegalArgumentException("El valor de la nota debe estar entre 0 y 5");
+		if (!UtilNumero.estaEntre(valor, VALOR_MINIMO, VALOR_MAXIMO)) {
+			throw new ReglaNegocioException(CodigoMensaje.VALOR_NOTA_FUERA_DE_RANGO);
 		}
 	}
 
