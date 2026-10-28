@@ -7,11 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.entidad.RecuperacionClaveEntidadJpa;
 
-@Repository
+
 public interface RecuperacionClaveJpaRepositorio extends JpaRepository<RecuperacionClaveEntidadJpa, UUID> {
 
 	Optional<RecuperacionClaveEntidadJpa> findFirstByIdUsuarioAndUsadoFalseOrderByCreadoEnDesc(UUID idUsuario);
