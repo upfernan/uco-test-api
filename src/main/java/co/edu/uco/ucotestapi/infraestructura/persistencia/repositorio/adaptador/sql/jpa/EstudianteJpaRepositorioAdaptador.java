@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Example;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.entidad.EstudianteEntidadJpa;
@@ -12,6 +13,7 @@ import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.Es
 import co.edu.uco.ucotestapi.infraestructura.persistencia.mapeador.MapeadorJpa;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.EstudianteRepositorio;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.entidad.EstudianteEntidad;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.configuracion.cache.NombreCache;
 
 
 
@@ -27,6 +29,7 @@ public class EstudianteJpaRepositorioAdaptador implements EstudianteRepositorio 
 		this.mapper = mapper;
 	}
 
+	@CacheEvict(cacheNames = NombreCache.ESTUDIANTES_GRUPO, allEntries = true)
 	@Override
 	public void crear(EstudianteEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -54,6 +57,7 @@ public class EstudianteJpaRepositorioAdaptador implements EstudianteRepositorio 
 		return estudianteJPARepositorio.existsById(id);
 	}
 
+	@CacheEvict(cacheNames = NombreCache.ESTUDIANTES_GRUPO, allEntries = true)
 	@Override
 	public void modificar(UUID id, EstudianteEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -61,6 +65,7 @@ public class EstudianteJpaRepositorioAdaptador implements EstudianteRepositorio 
 		estudianteJPARepositorio.save(entidadJPA);
 	}
 
+	@CacheEvict(cacheNames = NombreCache.ESTUDIANTES_GRUPO, allEntries = true)
 	@Override
 	public void eliminar(UUID id) {
 		estudianteJPARepositorio.deleteById(id);

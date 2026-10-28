@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Example;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.entidad.DocenteEntidadJpa;
@@ -12,6 +13,7 @@ import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.Do
 import co.edu.uco.ucotestapi.infraestructura.persistencia.mapeador.MapeadorJpa;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.DocenteRepositorio;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.entidad.DocenteEntidad;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.configuracion.cache.NombreCache;
 
 
 @Component
@@ -24,6 +26,7 @@ public class DocenteJpaRepositorioAdaptador implements DocenteRepositorio {
 		this.mapper = mapper;
 	}
 
+	@CacheEvict(cacheNames = NombreCache.GRUPOS_DOCENTE, allEntries = true)
 	@Override
 	public void crear(DocenteEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -51,6 +54,7 @@ public class DocenteJpaRepositorioAdaptador implements DocenteRepositorio {
 		return docenteJPARepositorio.existsById(id);
 	}
 
+	@CacheEvict(cacheNames = NombreCache.GRUPOS_DOCENTE, allEntries = true)
 	@Override
 	public void modificar(UUID id, DocenteEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -58,6 +62,7 @@ public class DocenteJpaRepositorioAdaptador implements DocenteRepositorio {
 		docenteJPARepositorio.save(entidadJPA);
 	}
 
+	@CacheEvict(cacheNames = NombreCache.GRUPOS_DOCENTE, allEntries = true)
 	@Override
 	public void eliminar(UUID id) {
 		docenteJPARepositorio.deleteById(id);

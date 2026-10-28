@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Example;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.entidad.NotaEntidadJpa;
@@ -12,6 +14,7 @@ import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.No
 import co.edu.uco.ucotestapi.infraestructura.persistencia.mapeador.MapeadorJpa;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.NotaRepositorio;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.entidad.NotaEntidad;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.configuracion.cache.NombreCache;
 
 
 @Component
@@ -24,6 +27,7 @@ public class NotaJpaRepositorioAdaptador implements NotaRepositorio {
 		this.mapper = mapper;
 	}
 
+	@CacheEvict(cacheNames = NombreCache.NOTAS_GRUPO, allEntries = true)
 	@Override
 	public void crear(NotaEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -51,6 +55,7 @@ public class NotaJpaRepositorioAdaptador implements NotaRepositorio {
 		return notaJPARepositorio.existsById(id);
 	}
 
+	@CacheEvict(cacheNames = NombreCache.NOTAS_GRUPO, allEntries = true)
 	@Override
 	public void modificar(UUID id, NotaEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -58,12 +63,14 @@ public class NotaJpaRepositorioAdaptador implements NotaRepositorio {
 		notaJPARepositorio.save(entidadJPA);
 	}
 
+	@CacheEvict(cacheNames = NombreCache.NOTAS_GRUPO, allEntries = true)
 	@Override
 	public void eliminar(UUID id) {
 		notaJPARepositorio.deleteById(id);
 	}
 
 	@Override
+	@Cacheable(cacheNames = NombreCache.NOTAS_GRUPO, key = "#idGrupo")
 	public List<NotaEntidad> consultarPorGrupo(UUID idGrupo) {
 		return notaJPARepositorio.findByGrupo_Id(idGrupo).stream().map(mapper::ConvertirAEntidad).toList();
 	}
