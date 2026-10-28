@@ -24,6 +24,7 @@ public class GrupoEntidadMapper implements EntidadMapper<GrupoEntidad, GrupoEnti
 		}
 		var entidad = new GrupoEntidad();
 		entidad.setId(entidadJPA.getId());
+		entidad.setNombre(entidadJPA.getNombre());
 		entidad.setEstado(entidadJPA.getEstado());
 		entidad.setFechaInicio(entidadJPA.getFechaInicio());
 		entidad.setFechaFin(entidadJPA.getFechaFin());
@@ -38,6 +39,7 @@ public class GrupoEntidadMapper implements EntidadMapper<GrupoEntidad, GrupoEnti
 		}
 		var entidadJPA = new GrupoEntidadJPA();
 		entidadJPA.setId(entidad.getId());
+		entidadJPA.setNombre(entidad.getNombre());
 		entidadJPA.setEstado(entidad.getEstado());
 		entidadJPA.setFechaInicio(entidad.getFechaInicio());
 		entidadJPA.setFechaFin(entidad.getFechaFin());

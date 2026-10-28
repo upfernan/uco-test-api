@@ -1,0 +1,15 @@
+meta {
+  name: Notas del grupo
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/v1/grupos/{{idGrupo}}/notas
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

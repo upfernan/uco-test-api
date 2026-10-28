@@ -1,5 +1,6 @@
 package co.edu.uco.ucotestapi.servicios.output.ports.repositorios;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,5 +11,7 @@ public interface GrupoEstudianteRepositorio extends CrearRepositorio<EstudianteG
 	boolean existePorEstudianteYGrupo(UUID idEstudiante, UUID idGrupo);
 
 	Optional<EstudianteGrupoEntidad> consultarPorEstudianteYGrupo(UUID idEstudiante, UUID idGrupo);
+
+	List<EstudianteGrupoEntidad> consultarPorGrupo(UUID idGrupo);
 
 }

@@ -63,4 +63,9 @@ public class NotaRepositorioAdapter implements NotaRepositorio {
 		notaJPARepositorio.deleteById(id);
 	}
 
+	@Override
+	public List<NotaEntidad> consultarPorGrupo(UUID idGrupo) {
+		return notaJPARepositorio.findByGrupo_Id(idGrupo).stream().map(mapper::ConvertirAEntidad).toList();
+	}
+
 }

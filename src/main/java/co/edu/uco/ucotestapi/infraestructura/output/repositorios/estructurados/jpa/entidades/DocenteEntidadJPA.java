@@ -18,6 +18,9 @@ public class DocenteEntidadJPA {
 	@Column(name = "id")
 	private UUID id;
 
+	@Column(name = "nombre")
+	private String nombre;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "estado")
 	private EstadoDocente estado;
@@ -28,7 +31,15 @@ public class DocenteEntidadJPA {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+	public String getNombre() {
+		return nombre;
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
 
 	public EstadoDocente getEstado() {
 		return estado;

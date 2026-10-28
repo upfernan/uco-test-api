@@ -20,6 +20,9 @@ public class GrupoEntidadJPA {
 	@Id
 	@Column(name = "id")
 	private UUID id;
+
+	@Column(name = "nombre")
+	private String nombre;
 	
 	
 	@ManyToOne
@@ -42,7 +45,15 @@ public class GrupoEntidadJPA {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+	public String getNombre() {
+		return nombre;
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
 
 	public DocenteEntidadJPA getDocente() {
 		return docente;

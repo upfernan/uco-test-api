@@ -1,0 +1,25 @@
+meta {
+  name: Registrar nota 3.5
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/notas-estudiantes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "idDocente": "{{idDocente}}",
+    "idGrupo": "{{idGrupo}}",
+    "idEstudiante": "{{idEstudiante}}",
+    "idNota": "{{idNota}}",
+    "valor": 3.5
+  }
+}
+
+assert {
+  res.status: eq 201
+}

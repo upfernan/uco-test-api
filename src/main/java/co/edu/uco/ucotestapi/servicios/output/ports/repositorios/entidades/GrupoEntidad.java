@@ -7,6 +7,7 @@ import co.edu.uco.ucotestapi.dominio.enums.EstadoGrupo;
 
 public class GrupoEntidad {
 	private UUID id;
+	private String nombre;
 	private DocenteEntidad docente;
 	private EstadoGrupo estado;
 	private LocalDate fechaInicio;
@@ -18,7 +19,15 @@ public class GrupoEntidad {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+	public String getNombre() {
+		return nombre;
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
 
 	public DocenteEntidad getDocente() {
 		return docente;

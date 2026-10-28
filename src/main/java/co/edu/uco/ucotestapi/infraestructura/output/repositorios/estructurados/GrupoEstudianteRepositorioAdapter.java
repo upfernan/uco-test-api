@@ -73,4 +73,9 @@ public class GrupoEstudianteRepositorioAdapter implements GrupoEstudianteReposit
 		estudianteGrupoJPARepositorio.deleteById(id);
 	}
 
+	@Override
+	public List<EstudianteGrupoEntidad> consultarPorGrupo(UUID idGrupo) {
+		return estudianteGrupoJPARepositorio.findByGrupo_Id(idGrupo).stream().map(mapper::ConvertirAEntidad).toList();
+	}
+
 }
