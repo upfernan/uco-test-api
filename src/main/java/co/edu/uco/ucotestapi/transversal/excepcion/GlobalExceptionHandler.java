@@ -12,18 +12,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import co.edu.uco.ucotestapi.dominio.excepciones.ReglaNegocioException;
-import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CatalogoMensajesServicio;
-import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CodigoMensaje;
+import co.edu.uco.ucotestapi.aplicacion.puertosalida.CatalogoMensajesPuertoSalida;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
 import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaError;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-	private final CatalogoMensajesServicio catalogoMensajes;
+	private final CatalogoMensajesPuertoSalida catalogoMensajes;
 
-	public GlobalExceptionHandler(final CatalogoMensajesServicio catalogoMensajes) {
+	public GlobalExceptionHandler(final CatalogoMensajesPuertoSalida catalogoMensajes) {
 		this.catalogoMensajes = catalogoMensajes;
 	}
 
@@ -31,13 +30,6 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<RespuestaError> gestionar(final UcoTestApiExcepcion excepcion) {
 		LOGGER.error("Error controlado: {}", excepcion.getMensajeTecnico(), excepcion.getExcepcionRaiz());
 		return new ResponseEntity<>(RespuestaError.crear(excepcion.getMensajeUsuario()), HttpStatus.BAD_REQUEST);
-	}
-
-	@ExceptionHandler(ReglaNegocioException.class)
-	public ResponseEntity<RespuestaError> gestionar(final ReglaNegocioException excepcion) {
-		var mensajeUsuario = mensaje(excepcion.getCodigo(), excepcion.getParametros());
-		LOGGER.error(mensaje(CodigoMensaje.REGLA_NEGOCIO_INCUMPLIDA_TECNICO, excepcion.getMessage()), excepcion);
-		return new ResponseEntity<>(RespuestaError.crear(mensajeUsuario), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({ HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })

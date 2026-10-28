@@ -3,9 +3,9 @@ package co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante;
 import java.util.Objects;
 import java.util.UUID;
 
-import co.edu.uco.ucotestapi.dominio.excepciones.ReglaNegocioException;
-import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CodigoMensaje;
-import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.EstudianteRepositorio;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CatalogoMensajesProveedor;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
+import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.EstudianteRepositorio;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilUUID;
 
 public class EstudianteDominio {
@@ -19,15 +19,15 @@ public class EstudianteDominio {
 
 	public void validarEstudianteExista() {
 		if (UtilUUID.esValorDefecto(id)) {
-			throw new ReglaNegocioException(CodigoMensaje.ESTUDIANTE_ID_NULO);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.ESTUDIANTE_ID_NULO);
 		}
 		if (!estudianteRepositorio.existePorId(id)) {
-			throw new ReglaNegocioException(CodigoMensaje.ESTUDIANTE_NO_EXISTE, id);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.ESTUDIANTE_NO_EXISTE, id);
 		}
 	}
 	private void ValidarEstudianteEsteActivo() {
 		if (UtilUUID.esValorDefecto(id)) {
-			throw new ReglaNegocioException(CodigoMensaje.ESTUDIANTE_ID_NULO);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.ESTUDIANTE_ID_NULO);
 		}
 	
 	}
