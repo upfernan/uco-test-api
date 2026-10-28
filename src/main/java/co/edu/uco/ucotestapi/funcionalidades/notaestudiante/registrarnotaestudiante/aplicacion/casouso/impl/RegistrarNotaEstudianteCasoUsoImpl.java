@@ -97,7 +97,7 @@ public class RegistrarNotaEstudianteCasoUsoImpl implements RegistrarNotaEstudian
 	private void notificarDespuesDeConfirmar(final EstudianteGrupoEntidad estudianteGrupo, final String nombreNota,
 			final int valorEscalado) {
 		var nombreEstudiante = estudianteGrupo.getEstudiante().getNombre();
-		var aviso = new NotificacionDTO(nombreEstudiante,
+		var aviso = new NotificacionDTO(nombreEstudiante, estudianteGrupo.getEstudiante().getCorreo(),
 				CatalogoMensajesProveedor.contenido(CodigoMensaje.NOTIFICACION_NOTA_REGISTRADA_ASUNTO, nombreNota),
 				CatalogoMensajesProveedor.contenido(CodigoMensaje.NOTIFICACION_NOTA_REGISTRADA_CONTENIDO, nombreEstudiante,
 						nombreNota, BigDecimal.valueOf(valorEscalado, 2).toPlainString()));
