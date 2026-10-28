@@ -4,14 +4,16 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Component;
 
 import co.edu.uco.ucotestapi.aplicacion.puertosalida.CatalogoMensajesPuertoSalida;
 import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
 import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.MensajeCatalogoDTO;
 
 
-@Component
+/**
+ * Lee los mensajes del archivo mensajes.properties de la API. Se usa en local, en las pruebas
+ * y como respaldo cuando el servicio externo del catalogo no responde.
+ */
 public class CatalogoMensajesPropiedadesAdaptador implements CatalogoMensajesPuertoSalida {
 	private static final Locale IDIOMA = Locale.forLanguageTag("es-CO");
 

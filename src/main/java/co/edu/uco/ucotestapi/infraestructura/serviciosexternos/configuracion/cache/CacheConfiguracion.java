@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.entidad.EstudianteGrupoEntidad;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.entidad.GrupoEntidad;
@@ -37,7 +38,8 @@ public class CacheConfiguracion implements CachingConfigurer {
 		return constructor -> constructor
 				.withCacheConfiguration(NombreCache.GRUPOS_DOCENTE, configuracion(GrupoEntidad.class))
 				.withCacheConfiguration(NombreCache.ESTUDIANTES_GRUPO, configuracion(EstudianteGrupoEntidad.class))
-				.withCacheConfiguration(NombreCache.NOTAS_GRUPO, configuracion(NotaEntidad.class));
+				.withCacheConfiguration(NombreCache.NOTAS_GRUPO, configuracion(NotaEntidad.class))
+				.withCacheConfiguration(NombreCache.MENSAJES_CATALOGO, configuracionTexto());
 	}
 
 	private static RedisCacheConfiguration configuracion(final Class<?> tipo) {
@@ -48,6 +50,14 @@ public class CacheConfiguracion implements CachingConfigurer {
 				.disableCachingNullValues()
 				.prefixCacheNameWith(PREFIJO)
 				.serializeValuesWith(SerializationPair.fromSerializer(new JacksonJsonRedisSerializer<>(mapeador, tipoLista)));
+	}
+
+	private static RedisCacheConfiguration configuracionTexto() {
+		return RedisCacheConfiguration.defaultCacheConfig()
+				.entryTtl(TIEMPO_VIDA)
+				.disableCachingNullValues()
+				.prefixCacheNameWith(PREFIJO)
+				.serializeValuesWith(SerializationPair.fromSerializer(RedisSerializer.string()));
 	}
 
 	@Override

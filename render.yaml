@@ -14,6 +14,8 @@ services:
     envVars:
       - key: DATABASE_URL
         sync: false
+      - key: CATALOGO_MENSAJES_URL
+        value: https://uco-test-catalogo-mensajes.onrender.com
 
   # API Gateway: la puerta de entrada. Reenvia /api/** a la API y limita las peticiones por IP.
   - type: web
@@ -31,3 +33,15 @@ services:
         value: https://uco-test-api.onrender.com
       - key: REDIS_URL
         sync: false
+
+  # Catalogo de mensajes: servicio externo que entrega los textos por codigo. La API lo consulta con cache en Redis.
+  - type: web
+    name: uco-test-catalogo-mensajes
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    autoDeployTrigger: "off"
+    rootDir: catalogo-mensajes
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
