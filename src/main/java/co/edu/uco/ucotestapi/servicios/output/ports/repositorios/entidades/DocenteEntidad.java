@@ -7,6 +7,7 @@ import co.edu.uco.ucotestapi.dominio.enums.EstadoDocente;
 public class DocenteEntidad {
 	private UUID id;
 	private String nombre;
+	private String correo;
 	private EstadoDocente estado;
 
 	public UUID getId() {
@@ -22,6 +23,14 @@ public class DocenteEntidad {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 
 

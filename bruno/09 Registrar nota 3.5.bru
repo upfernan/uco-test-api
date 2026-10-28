@@ -1,18 +1,21 @@
 meta {
   name: Registrar nota 3.5
   type: http
-  seq: 5
+  seq: 9
 }
 
 post {
   url: {{baseUrl}}/api/v1/notas-estudiantes
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 body:json {
   {
-    "idDocente": "{{idDocente}}",
     "idGrupo": "{{idGrupo}}",
     "idEstudiante": "{{idEstudiante}}",
     "idNota": "{{idNota}}",
@@ -22,4 +25,8 @@ body:json {
 
 assert {
   res.status: eq 201
+}
+
+docs {
+  El docente sale del token, no del cuerpo. Si la nota ya existe, responde 400 (regla 6).
 }

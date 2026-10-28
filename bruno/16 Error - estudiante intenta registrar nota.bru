@@ -1,0 +1,28 @@
+meta {
+  name: Error - estudiante intenta registrar nota
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{baseUrl}}/api/v1/notas-estudiantes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenEstudiante}}
+}
+
+body:json {
+  {
+    "idGrupo": "{{idGrupo}}",
+    "idEstudiante": "{{idEstudiante}}",
+    "idNota": "{{idNota}}",
+    "valor": 4
+  }
+}
+
+assert {
+  res.status: eq 403
+}

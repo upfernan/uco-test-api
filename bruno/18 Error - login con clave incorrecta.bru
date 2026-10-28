@@ -1,0 +1,23 @@
+meta {
+  name: Error - login con clave incorrecta
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoDocente}}",
+    "clave": "ClaveEquivocada1"
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.mensaje: eq Correo o contraseña incorrectos
+}

@@ -1,5 +1,5 @@
 meta {
-  name: Error - actividad inactiva
+  name: Error - nota mayor a 5
   type: http
   seq: 12
 }
@@ -7,20 +7,23 @@ meta {
 post {
   url: {{baseUrl}}/api/v1/notas-estudiantes
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 body:json {
   {
-    "idDocente": "{{idDocente}}",
     "idGrupo": "{{idGrupo}}",
     "idEstudiante": "{{idEstudiante}}",
-    "idNota": "{{idNotaInactiva}}",
-    "valor": 4
+    "idNota": "{{idNota}}",
+    "valor": 5.01
   }
 }
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains no está activa
+  res.body.mensaje: contains entre 0 y 5
 }

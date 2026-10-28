@@ -1,0 +1,27 @@
+meta {
+  name: Iniciar sesion estudiante
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoEstudiante}}",
+    "clave": "{{claveDemo}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.datos.rol: eq ESTUDIANTE
+}
+
+script:post-response {
+  bru.setVar("tokenEstudiante", res.body.datos.token);
+}

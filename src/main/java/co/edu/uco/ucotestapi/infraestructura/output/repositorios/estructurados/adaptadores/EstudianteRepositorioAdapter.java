@@ -66,4 +66,9 @@ public class EstudianteRepositorioAdapter implements EstudianteRepositorio {
 		estudianteJPARepositorio.deleteById(id);
 	}
 
+	@Override
+	public Optional<EstudianteEntidad> consultarPorCorreo(String correo) {
+		return estudianteJPARepositorio.findByCorreo(correo).map(mapper::ConvertirAEntidad);
+	}
+
 }

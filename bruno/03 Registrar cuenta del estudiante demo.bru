@@ -1,0 +1,24 @@
+meta {
+  name: Registrar cuenta del estudiante demo
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/registro
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Estudiante Demo",
+    "correo": "{{correoEstudiante}}",
+    "clave": "{{claveDemo}}",
+    "rol": "ESTUDIANTE"
+  }
+}
+
+docs {
+  La primera vez responde 201. Si la cuenta ya existe responde 400; es esperado.
+}

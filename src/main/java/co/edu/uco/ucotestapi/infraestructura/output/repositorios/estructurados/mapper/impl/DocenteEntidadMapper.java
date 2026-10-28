@@ -18,6 +18,7 @@ public class DocenteEntidadMapper implements EntidadMapper<DocenteEntidad, Docen
 		var entidad = new DocenteEntidad();
 		entidad.setId(entidadJPA.getId());
 		entidad.setNombre(entidadJPA.getNombre());
+		entidad.setCorreo(entidadJPA.getCorreo());
 		entidad.setEstado(entidadJPA.getEstado());
 		return entidad;
 	}
@@ -30,6 +31,7 @@ public class DocenteEntidadMapper implements EntidadMapper<DocenteEntidad, Docen
 		var entidadJPA = new DocenteEntidadJPA();
 		entidadJPA.setId(entidad.getId());
 		entidadJPA.setNombre(entidad.getNombre());
+		entidadJPA.setCorreo(entidad.getCorreo());
 		entidadJPA.setEstado(entidad.getEstado());
 		return entidadJPA;
 	}

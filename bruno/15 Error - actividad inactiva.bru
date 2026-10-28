@@ -1,26 +1,29 @@
 meta {
-  name: Error - tres decimales
+  name: Error - actividad inactiva
   type: http
-  seq: 7
+  seq: 15
 }
 
 post {
   url: {{baseUrl}}/api/v1/notas-estudiantes
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 body:json {
   {
-    "idDocente": "{{idDocente}}",
     "idGrupo": "{{idGrupo}}",
     "idEstudiante": "{{idEstudiante}}",
-    "idNota": "{{idNota}}",
-    "valor": 3.555
+    "idNota": "{{idNotaInactiva}}",
+    "valor": 4
   }
 }
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains dos decimales
+  res.body.mensaje: contains no está activa
 }
