@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.uco.ucotestapi.servicios.casosuso.notaestudiante.consultas.ConsultarEstudiantesGrupoCasoUso;
-import co.edu.uco.ucotestapi.servicios.casosuso.notaestudiante.consultas.ConsultarGruposDocenteCasoUso;
-import co.edu.uco.ucotestapi.servicios.casosuso.notaestudiante.consultas.ConsultarNotasGrupoCasoUso;
-import co.edu.uco.ucotestapi.servicios.casosuso.notaestudiante.registrarnotaestudiante.RegistrarNotaEstudianteCasoUso;
+import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.ConsultarEstudiantesGrupoCasoUso;
+import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.ConsultarGruposDocenteCasoUso;
+import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.ConsultarNotasGrupoCasoUso;
+import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.RegistrarNotaEstudianteCasoUso;
 import co.edu.uco.ucotestapi.servicios.input.dto.request.RegistrarNotaEstudianteDTO;
 import co.edu.uco.ucotestapi.servicios.input.dto.response.EstudianteResponseDTO;
 import co.edu.uco.ucotestapi.servicios.input.dto.response.GrupoResponseDTO;

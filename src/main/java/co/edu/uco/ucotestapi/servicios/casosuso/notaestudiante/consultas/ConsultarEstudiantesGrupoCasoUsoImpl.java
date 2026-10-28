@@ -1,5 +1,6 @@
 package co.edu.uco.ucotestapi.servicios.casosuso.notaestudiante.consultas;
 
+import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.ConsultarEstudiantesGrupoCasoUso;
 import java.util.List;
 import java.util.UUID;
 

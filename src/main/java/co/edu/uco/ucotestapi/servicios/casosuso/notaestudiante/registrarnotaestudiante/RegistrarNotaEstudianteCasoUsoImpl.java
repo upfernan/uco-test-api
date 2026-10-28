@@ -4,15 +4,18 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import co.edu.uco.ucotestapi.dominio.excepciones.ReglaNegocioException;
-import co.edu.uco.ucotestapi.dominionotaestudiante.registrarnotaestudiante.DocenteDominio;
-import co.edu.uco.ucotestapi.dominionotaestudiante.registrarnotaestudiante.EstudianteDominio;
-import co.edu.uco.ucotestapi.dominionotaestudiante.registrarnotaestudiante.EstudianteGrupoDominio;
-import co.edu.uco.ucotestapi.dominionotaestudiante.registrarnotaestudiante.GrupoDominio;
-import co.edu.uco.ucotestapi.dominionotaestudiante.registrarnotaestudiante.NotaDominio;
-import co.edu.uco.ucotestapi.dominionotaestudiante.registrarnotaestudiante.NotaEstudianteDominio;
+import co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante.DocenteDominio;
+import co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante.EstudianteDominio;
+import co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante.EstudianteGrupoDominio;
+import co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante.GrupoDominio;
+import co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante.NotaDominio;
+import co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante.NotaEstudianteDominio;
 import co.edu.uco.ucotestapi.servicios.input.dto.request.RegistrarNotaEstudianteDTO;
+import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.RegistrarNotaEstudianteCasoUso;
 import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.DocenteRepositorio;
 import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.EstudianteRepositorio;
 import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.GrupoEstudianteRepositorio;
@@ -22,6 +25,8 @@ import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.NotaRepositorio
 import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.entidades.NotaEstudianteEntidad;
 import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CatalogoMensajesServicio;
 import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CodigoMensaje;
+import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.notificaciongateway.NotificacionDTO;
+import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.notificaciongateway.NotificadorServicio;
 import co.edu.uco.ucotestapi.transversal.excepcion.UcoTestApiExcepcion;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilObjeto;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilUUID;
@@ -38,11 +43,13 @@ public class RegistrarNotaEstudianteCasoUsoImpl implements RegistrarNotaEstudian
 	private final NotaRepositorio notaRepositorio;
 	private final NotaEstudianteRepositorio notaEstudianteRepositorio;
 	private final CatalogoMensajesServicio catalogoMensajes;
+	private final NotificadorServicio notificador;
 
 	public RegistrarNotaEstudianteCasoUsoImpl(DocenteRepositorio docenteRepositorio,
 			EstudianteRepositorio estudianteRepositorio, GrupoRepositorio grupoRepositorio,
 			GrupoEstudianteRepositorio grupoEstudianteRepositorio, NotaRepositorio notaRepositorio,
-			NotaEstudianteRepositorio notaEstudianteRepositorio, CatalogoMensajesServicio catalogoMensajes) {
+			NotaEstudianteRepositorio notaEstudianteRepositorio, CatalogoMensajesServicio catalogoMensajes,
+			NotificadorServicio notificador) {
 		this.docenteRepositorio = docenteRepositorio;
 		this.estudianteRepositorio = estudianteRepositorio;
 		this.grupoRepositorio = grupoRepositorio;
@@ -50,6 +57,7 @@ public class RegistrarNotaEstudianteCasoUsoImpl implements RegistrarNotaEstudian
 		this.notaRepositorio = notaRepositorio;
 		this.notaEstudianteRepositorio = notaEstudianteRepositorio;
 		this.catalogoMensajes = catalogoMensajes;
+		this.notificador = notificador;
 	}
 
 	@Override
@@ -118,6 +126,25 @@ public class RegistrarNotaEstudianteCasoUsoImpl implements RegistrarNotaEstudian
 		notaEstudiante.setNota(nota);
 		notaEstudiante.setValor(valorEscalado);
 		notaEstudianteRepositorio.crear(notaEstudiante);
+
+		var nombreEstudiante = estudianteGrupo.getEstudiante().getNombre();
+		var valorReal = BigDecimal.valueOf(valorEscalado, 2).toPlainString();
+		notificarDespuesDeConfirmar(new NotificacionDTO(nombreEstudiante,
+				mensaje(CodigoMensaje.NOTIFICACION_NOTA_REGISTRADA_ASUNTO, nota.getNombre()),
+				mensaje(CodigoMensaje.NOTIFICACION_NOTA_REGISTRADA_CONTENIDO, nombreEstudiante, nota.getNombre(), valorReal)));
+	}
+
+	private void notificarDespuesDeConfirmar(NotificacionDTO notificacion) {
+		if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+			notificador.notificar(notificacion);
+			return;
+		}
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCommit() {
+				notificador.notificar(notificacion);
+			}
+		});
 	}
 
 }
