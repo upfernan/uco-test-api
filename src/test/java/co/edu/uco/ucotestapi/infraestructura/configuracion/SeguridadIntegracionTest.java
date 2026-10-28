@@ -33,6 +33,20 @@ class SeguridadIntegracionTest {
 	}
 
 	@Test
+	void laRaizSinPaginaResponde404YNo500() throws Exception {
+		mvc.perform(get("/"))
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.mensaje").value("El recurso solicitado no existe"));
+	}
+
+	@Test
+	void unMetodoNoSoportadoResponde405() throws Exception {
+		mvc.perform(get("/api/v1/auth/login"))
+				.andExpect(status().isMethodNotAllowed())
+				.andExpect(jsonPath("$.mensaje").value("La operación no está permitida para este recurso"));
+	}
+
+	@Test
 	void sinTokenResponde401ConMensajeDelCatalogo() throws Exception {
 		mvc.perform(get("/api/v1/grupos/" + GRUPO_DEMO + "/notas"))
 				.andExpect(status().isUnauthorized())
