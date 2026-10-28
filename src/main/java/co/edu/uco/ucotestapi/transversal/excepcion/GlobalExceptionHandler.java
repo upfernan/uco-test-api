@@ -14,7 +14,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import co.edu.uco.ucotestapi.aplicacion.puertosalida.CatalogoMensajesPuertoSalida;
 import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
-import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaError;
+import co.edu.uco.ucotestapi.transversal.respuesta.Respuesta;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,40 +27,40 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(UcoTestApiExcepcion.class)
-	public ResponseEntity<RespuestaError> gestionar(final UcoTestApiExcepcion excepcion) {
+	public ResponseEntity<Respuesta<Void>> gestionar(final UcoTestApiExcepcion excepcion) {
 		LOGGER.error("Error controlado: {}", excepcion.getMensajeTecnico(), excepcion.getExcepcionRaiz());
-		return new ResponseEntity<>(RespuestaError.crear(excepcion.getMensajeUsuario()), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(Respuesta.crearFallida(excepcion.getMensajeUsuario()), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({ HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })
-	public ResponseEntity<RespuestaError> gestionarDatosInvalidos(final Exception excepcion) {
+	public ResponseEntity<Respuesta<Void>> gestionarDatosInvalidos(final Exception excepcion) {
 		LOGGER.error(mensaje(CodigoMensaje.DATOS_PETICION_INVALIDOS_TECNICO), excepcion);
-		return new ResponseEntity<>(RespuestaError.crear(mensaje(CodigoMensaje.DATOS_PETICION_INVALIDOS_USUARIO)),
+		return new ResponseEntity<>(Respuesta.crearFallida(mensaje(CodigoMensaje.DATOS_PETICION_INVALIDOS_USUARIO)),
 				HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({ NoResourceFoundException.class, NoHandlerFoundException.class })
-	public ResponseEntity<RespuestaError> gestionarRecursoNoEncontrado(final Exception excepcion) {
+	public ResponseEntity<Respuesta<Void>> gestionarRecursoNoEncontrado(final Exception excepcion) {
 		if (LOGGER.isWarnEnabled()) {
 			LOGGER.warn(mensaje(CodigoMensaje.RECURSO_NO_ENCONTRADO_TECNICO, excepcion.getMessage()));
 		}
-		return new ResponseEntity<>(RespuestaError.crear(mensaje(CodigoMensaje.RECURSO_NO_ENCONTRADO_USUARIO)),
+		return new ResponseEntity<>(Respuesta.crearFallida(mensaje(CodigoMensaje.RECURSO_NO_ENCONTRADO_USUARIO)),
 				HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	public ResponseEntity<RespuestaError> gestionarMetodoNoPermitido(final HttpRequestMethodNotSupportedException excepcion) {
+	public ResponseEntity<Respuesta<Void>> gestionarMetodoNoPermitido(final HttpRequestMethodNotSupportedException excepcion) {
 		if (LOGGER.isWarnEnabled()) {
 			LOGGER.warn(mensaje(CodigoMensaje.METODO_NO_PERMITIDO_TECNICO, excepcion.getMethod()));
 		}
-		return new ResponseEntity<>(RespuestaError.crear(mensaje(CodigoMensaje.METODO_NO_PERMITIDO_USUARIO)),
+		return new ResponseEntity<>(Respuesta.crearFallida(mensaje(CodigoMensaje.METODO_NO_PERMITIDO_USUARIO)),
 				HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<RespuestaError> gestionar(final Exception excepcion) {
+	public ResponseEntity<Respuesta<Void>> gestionar(final Exception excepcion) {
 		LOGGER.error(mensaje(CodigoMensaje.ERROR_INESPERADO_TECNICO), excepcion);
-		return new ResponseEntity<>(RespuestaError.crear(mensaje(CodigoMensaje.ERROR_INESPERADO_USUARIO)),
+		return new ResponseEntity<>(Respuesta.crearFallida(mensaje(CodigoMensaje.ERROR_INESPERADO_USUARIO)),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

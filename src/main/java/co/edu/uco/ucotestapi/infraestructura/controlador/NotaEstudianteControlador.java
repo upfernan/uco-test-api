@@ -15,7 +15,9 @@ import co.edu.uco.ucotestapi.funcionalidades.notaestudiante.registrarnotaestudia
 import co.edu.uco.ucotestapi.funcionalidades.notaestudiante.registrarnotaestudiante.aplicacion.puertoentrada.dto.RegistrarNotaEstudianteDTO;
 import co.edu.uco.ucotestapi.infraestructura.controlador.dto.RegistrarNotaSolicitudDTO;
 import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.configuracion.seguridad.ClaimsToken;
-import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaExito;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CatalogoMensajesProveedor;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
+import co.edu.uco.ucotestapi.transversal.respuesta.Respuesta;
 
 @RestController
 @RequestMapping("/api/v1/notas-estudiantes")
@@ -27,12 +29,14 @@ public class NotaEstudianteControlador {
 	}
 
 	@PostMapping
-	public ResponseEntity<RespuestaExito<Void>> registrarNota(@AuthenticationPrincipal final Jwt sesion,
+	public ResponseEntity<Respuesta<Void>> registrarNota(@AuthenticationPrincipal final Jwt sesion,
 			@RequestBody final RegistrarNotaSolicitudDTO datos) {
 		var idDocente = UUID.fromString(sesion.getClaimAsString(ClaimsToken.ID_PERSONA));
 		registrarNotaEstudiante.ejecutar(new RegistrarNotaEstudianteDTO(idDocente, datos.idGrupo(), datos.idEstudiante(),
 				datos.idNota(), datos.valor()));
-		return new ResponseEntity<>(RespuestaExito.crear("La nota se registró correctamente", null), HttpStatus.CREATED);
+		Respuesta<Void> respuesta = Respuesta.crearExitosa();
+		respuesta.agregarMensaje(CatalogoMensajesProveedor.contenido(CodigoMensaje.NOTA_ESTUDIANTE_REGISTRADA));
+		return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
 	}
 
 }

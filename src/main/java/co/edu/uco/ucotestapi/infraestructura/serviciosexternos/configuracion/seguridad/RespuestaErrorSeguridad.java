@@ -1,12 +1,7 @@
 package co.edu.uco.ucotestapi.infraestructura.serviciosexternos.configuracion.seguridad;
 
-import co.edu.uco.ucotestapi.transversal.excepcion.GlobalExceptionHandler;
-import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaError;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,20 +13,23 @@ import org.springframework.stereotype.Component;
 
 import co.edu.uco.ucotestapi.aplicacion.puertosalida.CatalogoMensajesPuertoSalida;
 import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
+import co.edu.uco.ucotestapi.transversal.respuesta.Respuesta;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Los errores 401 y 403 ocurren antes de llegar al controlador, asi que el GlobalExceptionHandler no los ve.
- * Aqui se responden con el mismo formato que RespuestaError y con mensajes del catalogo.
+ * Aqui se responden con el mismo formato Respuesta y con mensajes del catalogo.
  */
 @Component
 public class RespuestaErrorSeguridad implements AuthenticationEntryPoint, AccessDeniedHandler {
-	private static final ZoneId ZONA_HORARIA = ZoneId.of("America/Bogota");
 	private final CatalogoMensajesPuertoSalida catalogoMensajes;
+	private final JsonMapper jsonMapper;
 
-	public RespuestaErrorSeguridad(final CatalogoMensajesPuertoSalida catalogoMensajes) {
+	public RespuestaErrorSeguridad(final CatalogoMensajesPuertoSalida catalogoMensajes, final JsonMapper jsonMapper) {
 		this.catalogoMensajes = catalogoMensajes;
+		this.jsonMapper = jsonMapper;
 	}
 
 	@Override
@@ -52,11 +50,7 @@ public class RespuestaErrorSeguridad implements AuthenticationEntryPoint, Access
 		respuesta.setStatus(estado.value());
 		respuesta.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		respuesta.setCharacterEncoding(StandardCharsets.UTF_8.name());
-		respuesta.getWriter().write("{\"mensaje\":\"" + escaparJson(mensaje) + "\",\"fecha\":\"" + LocalDateTime.now(ZONA_HORARIA) + "\"}");
-	}
-
-	private static String escaparJson(final String texto) {
-		return texto.replace("\\", "\\\\").replace("\"", "\\\"");
+		respuesta.getWriter().write(jsonMapper.writeValueAsString(Respuesta.crearFallida(mensaje)));
 	}
 
 }

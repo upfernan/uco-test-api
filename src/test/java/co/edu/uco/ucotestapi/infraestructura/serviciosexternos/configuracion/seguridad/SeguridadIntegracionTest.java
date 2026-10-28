@@ -40,21 +40,22 @@ class SeguridadIntegracionTest {
 	void laRaizSinPaginaResponde404YNo500() throws Exception {
 		mvc.perform(get("/"))
 				.andExpect(status().isNotFound())
-				.andExpect(jsonPath("$.mensaje").value("El recurso solicitado no existe"));
+				.andExpect(jsonPath("$.mensajes[0]").value("El recurso solicitado no existe"));
 	}
 
 	@Test
 	void unMetodoNoSoportadoResponde405() throws Exception {
 		mvc.perform(get("/api/v1/auth/login"))
 				.andExpect(status().isMethodNotAllowed())
-				.andExpect(jsonPath("$.mensaje").value("La operación no está permitida para este recurso"));
+				.andExpect(jsonPath("$.mensajes[0]").value("La operación no está permitida para este recurso"));
 	}
 
 	@Test
 	void sinTokenResponde401ConMensajeDelCatalogo() throws Exception {
 		mvc.perform(get("/api/v1/grupos/" + GRUPO_DEMO + "/notas"))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.mensaje").value("Debe iniciar sesión para usar este recurso"));
+				.andExpect(jsonPath("$.respuestaExitosa").value(false))
+				.andExpect(jsonPath("$.mensajes[0]").value("Debe iniciar sesión para usar este recurso"));
 	}
 
 	@Test
@@ -72,7 +73,7 @@ class SeguridadIntegracionTest {
 		mvc.perform(post("/api/v1/notas-estudiantes").header("Authorization", "Bearer " + token)
 				.contentType(MediaType.APPLICATION_JSON).content("{}"))
 				.andExpect(status().isForbidden())
-				.andExpect(jsonPath("$.mensaje").value("No tiene permiso para realizar esta acción"));
+				.andExpect(jsonPath("$.mensajes[0]").value("No tiene permiso para realizar esta acción"));
 	}
 
 	@Test
@@ -84,7 +85,7 @@ class SeguridadIntegracionTest {
 				.content("{\"idGrupo\":\"" + GRUPO_DEMO + "\",\"idEstudiante\":\"22222222-2222-2222-2222-111111111111\","
 						+ "\"idNota\":\"55555555-5555-5555-5555-111111111111\",\"valor\":4}"))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.mensaje").value(org.hamcrest.Matchers.containsString("no está asignado al grupo")));
+				.andExpect(jsonPath("$.mensajes[0]").value(org.hamcrest.Matchers.containsString("no está asignado al grupo")));
 	}
 
 	private String registrarEIniciarSesion(String rol) throws Exception {
@@ -96,7 +97,7 @@ class SeguridadIntegracionTest {
 				.content("{\"correo\":\"" + correo + "\",\"clave\":\"" + CLAVE + "\"}"))
 				.andExpect(status().isOk())
 				.andReturn().getResponse().getContentAsString();
-		return JsonPath.read(respuesta, "$.datos.token");
+		return JsonPath.read(respuesta, "$.datos[0].token");
 	}
 
 }

@@ -19,9 +19,9 @@ body:json {
 
 assert {
   res.status: eq 200
-  res.body.datos.rol: eq ESTUDIANTE
+  res.body.datos[0].rol: eq ESTUDIANTE
 }
 
 script:post-response {
-  bru.setVar("tokenEstudiante", res.body.datos.token);
+  bru.setVar("tokenEstudiante", res.body.datos[0].token);
 }

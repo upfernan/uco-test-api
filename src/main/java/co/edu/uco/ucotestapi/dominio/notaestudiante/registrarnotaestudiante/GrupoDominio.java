@@ -1,6 +1,5 @@
 package co.edu.uco.ucotestapi.dominio.notaestudiante.registrarnotaestudiante;
 
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -38,7 +37,7 @@ public class GrupoDominio {
 		if (grupo.getEstado() != EstadoGrupo.ACTIVO) {
 			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.GRUPO_NO_ACTIVO, id);
 		}
-		var hoy = LocalDate.now();
+		var hoy = UtilFecha.hoy();
 		if (UtilFecha.esNula(grupo.getFechaInicio()) || UtilFecha.esNula(grupo.getFechaFin())
 				|| hoy.isBefore(grupo.getFechaInicio()) || hoy.isAfter(grupo.getFechaFin())) {
 			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.GRUPO_NO_VIGENTE, id);

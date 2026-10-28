@@ -19,5 +19,5 @@ body:json {
 
 assert {
   res.status: eq 400
-  res.body.mensaje: eq Correo o contraseña incorrectos
+  res.body.mensajes[0]: eq Correo o contraseña incorrectos
 }
