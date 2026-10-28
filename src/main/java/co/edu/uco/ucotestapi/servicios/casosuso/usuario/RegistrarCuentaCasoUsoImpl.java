@@ -73,18 +73,13 @@ public class RegistrarCuentaCasoUsoImpl implements RegistrarCuentaCasoUso {
 
 	private CuentaResponseDTO registrar(CuentaDominio cuenta) {
 		var rol = cuenta.obtenerRol();
-		var usuario = new UsuarioEntidad();
-		usuario.setId(UtilUUID.generar());
-		usuario.setCorreo(cuenta.getCorreo());
-		usuario.setClaveHash(proveedorIdentidad.cifrarClave(cuenta.getClave()));
-		usuario.setRol(rol);
-		if (rol == RolUsuario.DOCENTE) {
-			usuario.setIdDocente(obtenerOCrearDocente(cuenta));
-		} else {
-			usuario.setIdEstudiante(obtenerOCrearEstudiante(cuenta));
-		}
+		var id = UtilUUID.generar();
+		var claveCifrada = proveedorIdentidad.cifrarClave(cuenta.getClave());
+		var usuario = rol == RolUsuario.DOCENTE
+				? UsuarioEntidad.deDocente(id, cuenta.getCorreo(), claveCifrada, obtenerOCrearDocente(cuenta))
+				: UsuarioEntidad.deEstudiante(id, cuenta.getCorreo(), claveCifrada, obtenerOCrearEstudiante(cuenta));
 		usuarioRepositorio.crear(usuario);
-		return new CuentaResponseDTO(usuario.getId(), usuario.getCorreo(), rol.name(), usuario.getIdPersona());
+		return new CuentaResponseDTO(usuario.id(), usuario.correo(), rol.name(), usuario.idPersona());
 	}
 
 	// Regla de registro 5: si ya existe un docente con ese correo y sin cuenta, la cuenta se asocia a el

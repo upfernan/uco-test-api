@@ -60,8 +60,8 @@ class RegistrarCuentaCasoUsoImplTest {
 
 		var usuario = ArgumentCaptor.forClass(UsuarioEntidad.class);
 		verify(usuarioRepositorio).crear(usuario.capture());
-		assertEquals("hash-bcrypt", usuario.getValue().getClaveHash());
-		assertEquals(RolUsuario.DOCENTE, usuario.getValue().getRol());
+		assertEquals("hash-bcrypt", usuario.getValue().claveHash());
+		assertEquals(RolUsuario.DOCENTE, usuario.getValue().rol());
 		assertEquals(docente.getValue().getId(), cuenta.idPersona());
 		assertEquals("DOCENTE", cuenta.rol());
 	}
@@ -104,8 +104,8 @@ class RegistrarCuentaCasoUsoImplTest {
 	void traduceLaReglaIncumplidaAlMensajeDelCatalogo() {
 		when(usuarioRepositorio.existePorCorreo("ana@b.co")).thenReturn(true);
 
-		var error = assertThrows(UcoTestApiExcepcion.class,
-				() -> casoUso.ejecutar(new RegistrarCuentaDTO("Ana", "ana@b.co", "Clave2026", "DOCENTE")));
+		var datos = new RegistrarCuentaDTO("Ana", "ana@b.co", "Clave2026", "DOCENTE");
+		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(datos));
 
 		assertEquals("Ya existe una cuenta registrada con ese correo", error.getMensajeUsuario());
 		verify(usuarioRepositorio, never()).crear(any());
@@ -122,8 +122,8 @@ class RegistrarCuentaCasoUsoImplTest {
 	void envuelveErroresInesperadosSinExponerDetalles() {
 		when(proveedorIdentidad.cifrarClave(any())).thenThrow(new IllegalStateException("detalle interno"));
 
-		var error = assertThrows(UcoTestApiExcepcion.class,
-				() -> casoUso.ejecutar(new RegistrarCuentaDTO("Ana", "ana@b.co", "Clave2026", "DOCENTE")));
+		var datos = new RegistrarCuentaDTO("Ana", "ana@b.co", "Clave2026", "DOCENTE");
+		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(datos));
 
 		assertEquals("Ocurrió un error inesperado al registrar la cuenta. Inténtelo de nuevo.", error.getMensajeUsuario());
 	}

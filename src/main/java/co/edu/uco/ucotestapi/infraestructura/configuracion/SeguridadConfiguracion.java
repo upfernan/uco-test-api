@@ -50,9 +50,12 @@ public class SeguridadConfiguracion {
 		return new BCryptPasswordEncoder();
 	}
 
+	// CSRF solo aplica cuando el navegador envia credenciales automaticamente (cookies de sesion).
+	// Esta API es sin estado y la sesion viaja en el encabezado Authorization: Bearer, que el navegador
+	// nunca adjunta por su cuenta, asi que un sitio malicioso no puede falsificar peticiones autenticadas.
+	@SuppressWarnings("java:S4502")
 	@Bean
-	public SecurityFilterChain cadenaSeguridad(final HttpSecurity http, final RespuestaErrorSeguridad respuestaError)
-			throws Exception {
+	public SecurityFilterChain cadenaSeguridad(final HttpSecurity http, final RespuestaErrorSeguridad respuestaError) {
 		http.csrf(csrf -> csrf.disable())
 				.sessionManagement(sesion -> sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(rutas -> rutas

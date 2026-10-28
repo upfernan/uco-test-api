@@ -14,7 +14,7 @@ public class CuentaDominio {
 	private static final int NOMBRE_MINIMO = 2;
 	private static final int NOMBRE_MAXIMO = 100;
 	private static final int CLAVE_MINIMA = 8;
-	private static final Pattern FORMATO_CORREO = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+	private static final Pattern FORMATO_CORREO = Pattern.compile("^[^\\s@]++@[^\\s@.]++(?:\\.[^\\s@.]++)++$");
 	private static final Pattern TIENE_LETRA = Pattern.compile("\\p{L}");
 	private static final Pattern TIENE_NUMERO = Pattern.compile("\\d");
 

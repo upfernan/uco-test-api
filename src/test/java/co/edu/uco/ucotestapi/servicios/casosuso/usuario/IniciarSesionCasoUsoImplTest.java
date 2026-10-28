@@ -69,17 +69,9 @@ class IniciarSesionCasoUsoImplTest {
 	}
 
 	private UsuarioEntidad usuario(RolUsuario rol) {
-		var usuario = new UsuarioEntidad();
-		usuario.setId(UUID.randomUUID());
-		usuario.setCorreo(rol == RolUsuario.DOCENTE ? "docente@b.co" : "laura@b.co");
-		usuario.setClaveHash("hash");
-		usuario.setRol(rol);
-		if (rol == RolUsuario.DOCENTE) {
-			usuario.setIdDocente(idDocente);
-		} else {
-			usuario.setIdEstudiante(idEstudiante);
-		}
-		return usuario;
+		return rol == RolUsuario.DOCENTE
+				? UsuarioEntidad.deDocente(UUID.randomUUID(), "docente@b.co", "hash", idDocente)
+				: UsuarioEntidad.deEstudiante(UUID.randomUUID(), "laura@b.co", "hash", idEstudiante);
 	}
 
 	@Test
@@ -102,7 +94,8 @@ class IniciarSesionCasoUsoImplTest {
 
 	@Test
 	void conClaveIncorrectaNoRevelaQueElCorreoExiste() {
-		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(new IniciarSesionDTO("docente@b.co", "Otra2026")));
+		var datos = new IniciarSesionDTO("docente@b.co", "Otra2026");
+		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(datos));
 
 		assertEquals(CREDENCIALES_INVALIDAS, error.getMensajeUsuario());
 		verify(proveedorIdentidad, never()).emitirToken(any());
@@ -112,7 +105,8 @@ class IniciarSesionCasoUsoImplTest {
 	void conCorreoInexistenteDaElMismoMensaje() {
 		when(usuarioRepositorio.consultarPorCorreo("nadie@b.co")).thenReturn(Optional.empty());
 
-		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(new IniciarSesionDTO("nadie@b.co", "Clave2026")));
+		var datos = new IniciarSesionDTO("nadie@b.co", "Clave2026");
+		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(datos));
 
 		assertEquals(CREDENCIALES_INVALIDAS, error.getMensajeUsuario());
 	}
@@ -121,7 +115,8 @@ class IniciarSesionCasoUsoImplTest {
 	void unDocenteInactivoNoPuedeIniciarSesion() {
 		docente.setEstado(EstadoDocente.INACTIVO);
 
-		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(new IniciarSesionDTO("docente@b.co", "Clave2026")));
+		var datos = new IniciarSesionDTO("docente@b.co", "Clave2026");
+		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(datos));
 
 		assertEquals("El docente con ID " + idDocente + " no está activo", error.getMensajeUsuario());
 		verify(proveedorIdentidad, never()).emitirToken(any());
@@ -138,7 +133,8 @@ class IniciarSesionCasoUsoImplTest {
 	void envuelveErroresInesperados() {
 		when(proveedorIdentidad.emitirToken(any())).thenThrow(new IllegalStateException("detalle interno"));
 
-		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(new IniciarSesionDTO("laura@b.co", "Clave2026")));
+		var datos = new IniciarSesionDTO("laura@b.co", "Clave2026");
+		var error = assertThrows(UcoTestApiExcepcion.class, () -> casoUso.ejecutar(datos));
 
 		assertEquals("Ocurrió un error inesperado al iniciar sesión. Inténtelo de nuevo.", error.getMensajeUsuario());
 	}

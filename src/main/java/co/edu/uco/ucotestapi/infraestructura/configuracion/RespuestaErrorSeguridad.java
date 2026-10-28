@@ -3,6 +3,7 @@ package co.edu.uco.ucotestapi.infraestructura.configuracion;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @Component
 public class RespuestaErrorSeguridad implements AuthenticationEntryPoint, AccessDeniedHandler {
+	private static final ZoneId ZONA_HORARIA = ZoneId.of("America/Bogota");
 	private final CatalogoMensajesServicio catalogoMensajes;
 
 	public RespuestaErrorSeguridad(final CatalogoMensajesServicio catalogoMensajes) {
@@ -47,7 +49,7 @@ public class RespuestaErrorSeguridad implements AuthenticationEntryPoint, Access
 		respuesta.setStatus(estado.value());
 		respuesta.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		respuesta.setCharacterEncoding(StandardCharsets.UTF_8.name());
-		respuesta.getWriter().write("{\"mensaje\":\"" + escaparJson(mensaje) + "\",\"fecha\":\"" + LocalDateTime.now() + "\"}");
+		respuesta.getWriter().write("{\"mensaje\":\"" + escaparJson(mensaje) + "\",\"fecha\":\"" + LocalDateTime.now(ZONA_HORARIA) + "\"}");
 	}
 
 	private static String escaparJson(final String texto) {

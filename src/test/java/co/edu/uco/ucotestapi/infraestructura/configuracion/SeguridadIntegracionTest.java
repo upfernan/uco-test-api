@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+
+import com.jayway.jsonpath.JsonPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -92,7 +94,7 @@ class SeguridadIntegracionTest {
 				.content("{\"correo\":\"" + correo + "\",\"clave\":\"" + CLAVE + "\"}"))
 				.andExpect(status().isOk())
 				.andReturn().getResponse().getContentAsString();
-		return respuesta.replaceAll(".*\"token\":\"([^\"]+)\".*", "$1");
+		return JsonPath.read(respuesta, "$.datos.token");
 	}
 
 }

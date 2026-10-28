@@ -16,14 +16,8 @@ public class UsuarioEntidadMapper implements EntidadMapper<UsuarioEntidad, Usuar
 		if (entidadJPA == null) {
 			throw new IllegalArgumentException("La entidad JPA de usuario no puede ser nula");
 		}
-		var entidad = new UsuarioEntidad();
-		entidad.setId(entidadJPA.getId());
-		entidad.setCorreo(entidadJPA.getCorreo());
-		entidad.setClaveHash(entidadJPA.getClaveHash());
-		entidad.setRol(entidadJPA.getRol());
-		entidad.setIdDocente(entidadJPA.getIdDocente());
-		entidad.setIdEstudiante(entidadJPA.getIdEstudiante());
-		return entidad;
+		return new UsuarioEntidad(entidadJPA.getId(), entidadJPA.getCorreo(), entidadJPA.getClaveHash(),
+				entidadJPA.getRol(), entidadJPA.getIdDocente(), entidadJPA.getIdEstudiante());
 	}
 
 	@Override
@@ -32,12 +26,12 @@ public class UsuarioEntidadMapper implements EntidadMapper<UsuarioEntidad, Usuar
 			throw new IllegalArgumentException("La entidad de usuario no puede ser nula");
 		}
 		var entidadJPA = new UsuarioEntidadJPA();
-		entidadJPA.setId(entidad.getId());
-		entidadJPA.setCorreo(entidad.getCorreo());
-		entidadJPA.setClaveHash(entidad.getClaveHash());
-		entidadJPA.setRol(entidad.getRol());
-		entidadJPA.setIdDocente(UtilUUID.tieneValor(entidad.getIdDocente()) ? entidad.getIdDocente() : null);
-		entidadJPA.setIdEstudiante(UtilUUID.tieneValor(entidad.getIdEstudiante()) ? entidad.getIdEstudiante() : null);
+		entidadJPA.setId(entidad.id());
+		entidadJPA.setCorreo(entidad.correo());
+		entidadJPA.setClaveHash(entidad.claveHash());
+		entidadJPA.setRol(entidad.rol());
+		entidadJPA.setIdDocente(UtilUUID.tieneValor(entidad.idDocente()) ? entidad.idDocente() : null);
+		entidadJPA.setIdEstudiante(UtilUUID.tieneValor(entidad.idEstudiante()) ? entidad.idEstudiante() : null);
 		return entidadJPA;
 	}
 

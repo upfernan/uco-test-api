@@ -49,14 +49,18 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler({ NoResourceFoundException.class, NoHandlerFoundException.class })
 	public ResponseEntity<RespuestaError> gestionarRecursoNoEncontrado(final Exception excepcion) {
-		LOGGER.warn(mensaje(CodigoMensaje.RECURSO_NO_ENCONTRADO_TECNICO, excepcion.getMessage()));
+		if (LOGGER.isWarnEnabled()) {
+			LOGGER.warn(mensaje(CodigoMensaje.RECURSO_NO_ENCONTRADO_TECNICO, excepcion.getMessage()));
+		}
 		return new ResponseEntity<>(RespuestaError.crear(mensaje(CodigoMensaje.RECURSO_NO_ENCONTRADO_USUARIO)),
 				HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<RespuestaError> gestionarMetodoNoPermitido(final HttpRequestMethodNotSupportedException excepcion) {
-		LOGGER.warn(mensaje(CodigoMensaje.METODO_NO_PERMITIDO_TECNICO, excepcion.getMethod()));
+		if (LOGGER.isWarnEnabled()) {
+			LOGGER.warn(mensaje(CodigoMensaje.METODO_NO_PERMITIDO_TECNICO, excepcion.getMethod()));
+		}
 		return new ResponseEntity<>(RespuestaError.crear(mensaje(CodigoMensaje.METODO_NO_PERMITIDO_USUARIO)),
 				HttpStatus.METHOD_NOT_ALLOWED);
 	}

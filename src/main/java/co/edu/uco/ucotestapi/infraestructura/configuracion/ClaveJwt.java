@@ -15,6 +15,7 @@ import co.edu.uco.ucotestapi.transversal.utilitario.UtilTexto;
 public final class ClaveJwt {
 	public static final int BYTES_MINIMOS = 32;
 	private static final String ALGORITMO = "HmacSHA256";
+	private static final SecureRandom ALEATORIO = new SecureRandom();
 
 	private ClaveJwt() {
 		super();
@@ -37,7 +38,7 @@ public final class ClaveJwt {
 
 	private static SecretKey generarTemporal() {
 		var bytes = new byte[BYTES_MINIMOS];
-		new SecureRandom().nextBytes(bytes);
+		ALEATORIO.nextBytes(bytes);
 		return new SecretKeySpec(bytes, ALGORITMO);
 	}
 

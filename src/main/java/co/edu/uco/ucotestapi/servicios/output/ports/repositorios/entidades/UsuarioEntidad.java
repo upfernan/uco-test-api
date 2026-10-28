@@ -5,63 +5,22 @@ import java.util.UUID;
 import co.edu.uco.ucotestapi.dominio.enums.RolUsuario;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilUUID;
 
-public class UsuarioEntidad {
-	private UUID id;
-	private String correo;
-	private String claveHash;
-	private RolUsuario rol;
-	private UUID idDocente = UtilUUID.UUID_DEFECTO;
-	private UUID idEstudiante = UtilUUID.UUID_DEFECTO;
+public record UsuarioEntidad(UUID id, String correo, String claveHash, RolUsuario rol, UUID idDocente, UUID idEstudiante) {
 
-	public UUID getId() {
-		return id;
+	public UsuarioEntidad {
+		idDocente = UtilUUID.obtenerValorDefecto(idDocente);
+		idEstudiante = UtilUUID.obtenerValorDefecto(idEstudiante);
 	}
 
-	public void setId(UUID id) {
-		this.id = id;
+	public static UsuarioEntidad deDocente(UUID id, String correo, String claveHash, UUID idDocente) {
+		return new UsuarioEntidad(id, correo, claveHash, RolUsuario.DOCENTE, idDocente, UtilUUID.UUID_DEFECTO);
 	}
 
-	public String getCorreo() {
-		return correo;
+	public static UsuarioEntidad deEstudiante(UUID id, String correo, String claveHash, UUID idEstudiante) {
+		return new UsuarioEntidad(id, correo, claveHash, RolUsuario.ESTUDIANTE, UtilUUID.UUID_DEFECTO, idEstudiante);
 	}
 
-	public void setCorreo(String correo) {
-		this.correo = correo;
-	}
-
-	public String getClaveHash() {
-		return claveHash;
-	}
-
-	public void setClaveHash(String claveHash) {
-		this.claveHash = claveHash;
-	}
-
-	public RolUsuario getRol() {
-		return rol;
-	}
-
-	public void setRol(RolUsuario rol) {
-		this.rol = rol;
-	}
-
-	public UUID getIdDocente() {
-		return idDocente;
-	}
-
-	public void setIdDocente(UUID idDocente) {
-		this.idDocente = UtilUUID.obtenerValorDefecto(idDocente);
-	}
-
-	public UUID getIdEstudiante() {
-		return idEstudiante;
-	}
-
-	public void setIdEstudiante(UUID idEstudiante) {
-		this.idEstudiante = UtilUUID.obtenerValorDefecto(idEstudiante);
-	}
-
-	public UUID getIdPersona() {
+	public UUID idPersona() {
 		return rol == RolUsuario.DOCENTE ? idDocente : idEstudiante;
 	}
 

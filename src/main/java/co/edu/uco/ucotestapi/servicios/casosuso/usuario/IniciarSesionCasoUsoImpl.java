@@ -52,10 +52,10 @@ public class IniciarSesionCasoUsoImpl implements IniciarSesionCasoUso {
 			var datosValidos = UtilObjeto.obtenerValorDefecto(datos, DATOS_VACIOS);
 			var usuario = validarCredenciales(datosValidos);
 			var nombre = validarPersonaYObtenerNombre(usuario);
-			var token = proveedorIdentidad.emitirToken(new DatosSesionDTO(usuario.getId(), usuario.getCorreo(), nombre,
-					usuario.getRol(), usuario.getIdPersona()));
-			return new SesionResponseDTO(token.token(), token.expiraEn(), usuario.getRol().name(), nombre,
-					usuario.getIdPersona());
+			var token = proveedorIdentidad.emitirToken(new DatosSesionDTO(usuario.id(), usuario.correo(), nombre,
+					usuario.rol(), usuario.idPersona()));
+			return new SesionResponseDTO(token.token(), token.expiraEn(), usuario.rol().name(), nombre,
+					usuario.idPersona());
 		} catch (ReglaNegocioException excepcion) {
 			throw UcoTestApiExcepcion.crear(excepcion,
 					mensaje(excepcion.getCodigo(), excepcion.getParametros()),
@@ -74,18 +74,18 @@ public class IniciarSesionCasoUsoImpl implements IniciarSesionCasoUso {
 		var correo = UtilTexto.aplicarTrim(datos.correo()).toLowerCase(Locale.ROOT);
 		var clave = UtilTexto.obtenerValorDefecto(datos.clave());
 		return usuarioRepositorio.consultarPorCorreo(correo)
-				.filter(usuario -> proveedorIdentidad.claveCoincide(clave, usuario.getClaveHash()))
+				.filter(usuario -> proveedorIdentidad.claveCoincide(clave, usuario.claveHash()))
 				.orElseThrow(() -> new ReglaNegocioException(CodigoMensaje.CREDENCIALES_INVALIDAS));
 	}
 
 	// Regla de login 6: si es docente, debe estar activo (regla 7 del registro de notas)
 	private String validarPersonaYObtenerNombre(UsuarioEntidad usuario) {
-		if (usuario.getRol() == RolUsuario.DOCENTE) {
-			new DocenteDominio(usuario.getIdDocente(), docenteRepositorio).validarDocenteActivo();
-			return docenteRepositorio.consultarPorId(usuario.getIdDocente()).map(DocenteEntidad::getNombre)
+		if (usuario.rol() == RolUsuario.DOCENTE) {
+			new DocenteDominio(usuario.idDocente(), docenteRepositorio).validarDocenteActivo();
+			return docenteRepositorio.consultarPorId(usuario.idDocente()).map(DocenteEntidad::getNombre)
 					.orElseThrow(() -> new ReglaNegocioException(CodigoMensaje.CREDENCIALES_INVALIDAS));
 		}
-		return estudianteRepositorio.consultarPorId(usuario.getIdEstudiante()).map(EstudianteEntidad::getNombre)
+		return estudianteRepositorio.consultarPorId(usuario.idEstudiante()).map(EstudianteEntidad::getNombre)
 				.orElseThrow(() -> new ReglaNegocioException(CodigoMensaje.CREDENCIALES_INVALIDAS));
 	}
 
