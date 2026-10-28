@@ -14,7 +14,7 @@ public class UsuarioMapeadorJpa implements MapeadorJpa<UsuarioEntidad, UsuarioEn
 	@Override
 	public UsuarioEntidad ConvertirAEntidad(UsuarioEntidadJpa entidadJPA) {
 		if (entidadJPA == null) {
-			throw new IllegalArgumentException("La entidad JPA de usuario no puede ser nula");
+			return new UsuarioEntidad(null, null, null, null, null, null);
 		}
 		return new UsuarioEntidad(entidadJPA.getId(), entidadJPA.getCorreo(), entidadJPA.getClaveHash(),
 				entidadJPA.getRol(), entidadJPA.getIdDocente(), entidadJPA.getIdEstudiante());
@@ -23,7 +23,7 @@ public class UsuarioMapeadorJpa implements MapeadorJpa<UsuarioEntidad, UsuarioEn
 	@Override
 	public UsuarioEntidadJpa ConvertirAEntidadJPA(UsuarioEntidad entidad) {
 		if (entidad == null) {
-			throw new IllegalArgumentException("La entidad de usuario no puede ser nula");
+			return new UsuarioEntidadJpa();
 		}
 		var entidadJPA = new UsuarioEntidadJpa();
 		entidadJPA.setId(entidad.id());

@@ -24,7 +24,7 @@ public class EstudianteGrupoMapeadorJpa implements MapeadorJpa<EstudianteGrupoEn
 	@Override
 	public EstudianteGrupoEntidad ConvertirAEntidad(EstudianteGrupoEntidadJpa entidadJPA) {
 		if (entidadJPA == null) {
-			throw new IllegalArgumentException("La entidad JPA de estudiante por grupo no puede ser nula");
+			return new EstudianteGrupoEntidad();
 		}
 		var entidad = new EstudianteGrupoEntidad();
 		entidad.setId(entidadJPA.getId());
@@ -36,7 +36,7 @@ public class EstudianteGrupoMapeadorJpa implements MapeadorJpa<EstudianteGrupoEn
 	@Override
 	public EstudianteGrupoEntidadJpa ConvertirAEntidadJPA(EstudianteGrupoEntidad entidad) {
 		if (entidad == null) {
-			throw new IllegalArgumentException("La entidad de estudiante por grupo no puede ser nula");
+			return new EstudianteGrupoEntidadJpa();
 		}
 		var entidadJPA = new EstudianteGrupoEntidadJpa();
 		entidadJPA.setId(entidad.getId());
