@@ -24,6 +24,7 @@ public class NotaEntidadMapper implements EntidadMapper<NotaEntidad, NotaEntidad
 		}
 		var entidad = new NotaEntidad();
 		entidad.setId(entidadJPA.getId());
+		entidad.setNombre(entidadJPA.getNombre());
 		entidad.setFechaRegistroDesde(entidadJPA.getFechaRegistroDesde());
 		entidad.setFechaRegistroHasta(entidadJPA.getFechaRegistroHasta());
 		entidad.setEstado(entidadJPA.getEstado());
@@ -38,6 +39,7 @@ public class NotaEntidadMapper implements EntidadMapper<NotaEntidad, NotaEntidad
 		}
 		var entidadJPA = new NotaEntidadJPA();
 		entidadJPA.setId(entidad.getId());
+		entidadJPA.setNombre(entidad.getNombre());
 		entidadJPA.setFechaRegistroDesde(entidad.getFechaRegistroDesde());
 		entidadJPA.setFechaRegistroHasta(entidad.getFechaRegistroHasta());
 		entidadJPA.setEstado(entidad.getEstado());

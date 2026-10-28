@@ -7,6 +7,7 @@ import co.edu.uco.ucotestapi.dominio.enums.EstadoNota;
 
 public class NotaEntidad {
 	private UUID id;
+	private String nombre;
 	private GrupoEntidad grupo;
 	private Instant fechaRegistroDesde;
 	private Instant fechaRegistroHasta;
@@ -18,7 +19,15 @@ public class NotaEntidad {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+	public String getNombre() {
+		return nombre;
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
 
 	public GrupoEntidad getGrupo() {
 		return grupo;

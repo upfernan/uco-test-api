@@ -1,0 +1,15 @@
+# Blueprint de Render: crea la API (plan gratis).
+# La base de datos es Neon (PostgreSQL gratis que no vence). Su cadena de conexion es un secreto:
+# Render la pide al crear el Blueprint (sync: false) y nunca queda en el repositorio.
+services:
+  - type: web
+    name: uco-test-api
+    runtime: docker
+    plan: free               # Gratis. Se duerme a los 15 min sin uso y tarda ~1 min en despertar.
+    region: virginia
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false

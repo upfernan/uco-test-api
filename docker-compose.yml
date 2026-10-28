@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ucotestapi
+      POSTGRES_USER: ucotestapi
+      POSTGRES_PASSWORD: ucotestapi
+    ports:
+      - "5433:5432"
+    volumes:
+      - datos-postgres:/var/lib/postgresql/data
+
+volumes:
+  datos-postgres:

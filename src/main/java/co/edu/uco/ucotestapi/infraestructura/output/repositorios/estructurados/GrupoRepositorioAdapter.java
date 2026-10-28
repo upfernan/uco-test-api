@@ -63,4 +63,9 @@ public class GrupoRepositorioAdapter implements GrupoRepositorio {
 		grupoJPARepositorio.deleteById(id);
 	}
 
+	@Override
+	public List<GrupoEntidad> consultarPorDocente(UUID idDocente) {
+		return grupoJPARepositorio.findByDocente_Id(idDocente).stream().map(mapper::ConvertirAEntidad).toList();
+	}
+
 }

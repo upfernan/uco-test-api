@@ -1,0 +1,26 @@
+meta {
+  name: Error - nota mayor a 5
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/v1/notas-estudiantes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "idDocente": "{{idDocente}}",
+    "idGrupo": "{{idGrupo}}",
+    "idEstudiante": "{{idEstudiante}}",
+    "idNota": "{{idNota}}",
+    "valor": 5.01
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.mensaje: contains entre 0 y 5
+}

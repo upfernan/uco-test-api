@@ -1,0 +1,26 @@
+meta {
+  name: Error - estudiante sin grupo
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/v1/notas-estudiantes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "idDocente": "{{idDocente}}",
+    "idGrupo": "{{idGrupo}}",
+    "idEstudiante": "{{idEstudianteSinGrupo}}",
+    "idNota": "{{idNota}}",
+    "valor": 4
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.mensaje: contains no pertenece al grupo
+}

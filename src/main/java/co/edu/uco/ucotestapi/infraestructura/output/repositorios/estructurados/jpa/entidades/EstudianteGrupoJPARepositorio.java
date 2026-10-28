@@ -1,5 +1,6 @@
 package co.edu.uco.ucotestapi.infraestructura.output.repositorios.estructurados.jpa.entidades;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,5 +13,7 @@ public interface EstudianteGrupoJPARepositorio extends JpaRepository<EstudianteG
 	boolean existsByEstudiante_IdAndGrupo_Id(UUID idEstudiante, UUID idGrupo);
 
 	Optional<EstudianteGrupoEntidadJPA> findByEstudiante_IdAndGrupo_Id(UUID idEstudiante, UUID idGrupo);
+
+	List<EstudianteGrupoEntidadJPA> findByGrupo_Id(UUID idGrupo);
 
 }

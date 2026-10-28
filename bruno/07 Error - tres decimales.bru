@@ -1,0 +1,26 @@
+meta {
+  name: Error - tres decimales
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/v1/notas-estudiantes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "idDocente": "{{idDocente}}",
+    "idGrupo": "{{idGrupo}}",
+    "idEstudiante": "{{idEstudiante}}",
+    "idNota": "{{idNota}}",
+    "valor": 3.555
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.mensaje: contains dos decimales
+}

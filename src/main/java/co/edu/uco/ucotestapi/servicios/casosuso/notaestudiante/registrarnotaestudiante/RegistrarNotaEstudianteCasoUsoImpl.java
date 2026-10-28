@@ -99,8 +99,8 @@ public class RegistrarNotaEstudianteCasoUsoImpl implements RegistrarNotaEstudian
 		var valorEscalado = NotaEstudianteDominio.escalarValor(datos.valor());
 		var notaEstudiante = new NotaEstudianteDominio(datos.idEstudiante(), datos.idNota(), valorEscalado,
 				notaEstudianteRepositorio);
-		notaEstudiante.validarNotaNoRegistrada();
 		notaEstudiante.validarValorEnRango();
+		notaEstudiante.validarNotaNoRegistrada();
 		return valorEscalado;
 	}
 
