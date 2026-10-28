@@ -60,6 +60,14 @@ class UrlBaseDatosTest {
 	}
 
 	@Test
+	void rechazaCaracteresNoValidosSinMostrarLaClave() {
+		var error = assertThrows(IllegalStateException.class,
+				() -> UrlBaseDatos.desde("postgresql://u:secreta@host con espacio/db"));
+
+		assertFalse(error.getMessage().contains("secreta"));
+	}
+
+	@Test
 	void rechazaUnaCadenaSinCredencialesSinMostrarla() {
 		var error = assertThrows(IllegalStateException.class, () -> UrlBaseDatos.desde("postgresql://host-secreto/db"));
 

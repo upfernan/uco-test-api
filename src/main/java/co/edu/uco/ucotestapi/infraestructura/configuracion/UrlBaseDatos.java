@@ -59,7 +59,8 @@ public record UrlBaseDatos(String jdbcUrl, String usuario, String clave) {
 	private static URI crearUri(final String texto) {
 		try {
 			return new URI(texto);
-		} catch (URISyntaxException excepcion) {
+		} catch (URISyntaxException _) {
+			// No se encadena la excepcion: su mensaje incluye la cadena completa, con la clave.
 			throw new IllegalStateException("DATABASE_URL tiene caracteres no válidos. Formato esperado: " + FORMATO_ESPERADO);
 		}
 	}
