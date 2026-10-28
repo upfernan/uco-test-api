@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Example;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.entidad.GrupoEntidadJpa;
@@ -12,6 +14,7 @@ import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.sql.jpa.Gr
 import co.edu.uco.ucotestapi.infraestructura.persistencia.mapeador.MapeadorJpa;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.GrupoRepositorio;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.entidad.GrupoEntidad;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.configuracion.cache.NombreCache;
 
 
 @Component
@@ -24,6 +27,7 @@ public class GrupoJpaRepositorioAdaptador implements GrupoRepositorio {
 		this.mapper = mapper;
 	}
 
+	@CacheEvict(cacheNames = { NombreCache.GRUPOS_DOCENTE, NombreCache.ESTUDIANTES_GRUPO, NombreCache.NOTAS_GRUPO }, allEntries = true)
 	@Override
 	public void crear(GrupoEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -51,6 +55,7 @@ public class GrupoJpaRepositorioAdaptador implements GrupoRepositorio {
 		return grupoJPARepositorio.existsById(id);
 	}
 
+	@CacheEvict(cacheNames = { NombreCache.GRUPOS_DOCENTE, NombreCache.ESTUDIANTES_GRUPO, NombreCache.NOTAS_GRUPO }, allEntries = true)
 	@Override
 	public void modificar(UUID id, GrupoEntidad entidad) {
 		var entidadJPA = mapper.ConvertirAEntidadJPA(entidad);
@@ -58,12 +63,14 @@ public class GrupoJpaRepositorioAdaptador implements GrupoRepositorio {
 		grupoJPARepositorio.save(entidadJPA);
 	}
 
+	@CacheEvict(cacheNames = { NombreCache.GRUPOS_DOCENTE, NombreCache.ESTUDIANTES_GRUPO, NombreCache.NOTAS_GRUPO }, allEntries = true)
 	@Override
 	public void eliminar(UUID id) {
 		grupoJPARepositorio.deleteById(id);
 	}
 
 	@Override
+	@Cacheable(cacheNames = NombreCache.GRUPOS_DOCENTE, key = "#idDocente")
 	public List<GrupoEntidad> consultarPorDocente(UUID idDocente) {
 		return grupoJPARepositorio.findByDocente_Id(idDocente).stream().map(mapper::ConvertirAEntidad).toList();
 	}
