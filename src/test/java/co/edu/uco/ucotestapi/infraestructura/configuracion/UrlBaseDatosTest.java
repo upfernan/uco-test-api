@@ -62,9 +62,58 @@ class UrlBaseDatosTest {
 	@Test
 	void rechazaCaracteresNoValidosSinMostrarLaClave() {
 		var error = assertThrows(IllegalStateException.class,
-				() -> UrlBaseDatos.desde("postgresql://u:secreta@host con espacio/db"));
+				() -> UrlBaseDatos.desde("postgresql://u:secreta@ho^st/db"));
 
 		assertFalse(error.getMessage().contains("secreta"));
+	}
+
+	@Test
+	void aceptaElFormatoEnvQueCopiaNeon() {
+		var url = UrlBaseDatos.desde("DATABASE_URL='" + NEON + "'");
+
+		assertEquals(JDBC_NEON, url.jdbcUrl());
+		assertEquals("npg_Clave123", url.clave());
+	}
+
+	@Test
+	void aceptaLaCadenaConSaltosDeLinea() {
+		assertEquals(JDBC_NEON, UrlBaseDatos.desde("\n# Neon\nDATABASE_URL=\"" + NEON + "\"\n").jdbcUrl());
+	}
+
+	@Test
+	void aceptaLasVariablesPgDeNeon() {
+		var url = UrlBaseDatos.desde("""
+				PGHOST='ep-cool-sun-a1b2c3.us-east-1.aws.neon.tech'
+				PGDATABASE='neondb'
+				PGUSER='neondb_owner'
+				PGPASSWORD='npg_Clave123'
+				""");
+
+		assertEquals(JDBC_NEON, url.jdbcUrl());
+		assertEquals("neondb_owner", url.usuario());
+		assertEquals("npg_Clave123", url.clave());
+	}
+
+	@Test
+	void rechazaVariablesPgIncompletas() {
+		var error = assertThrows(IllegalStateException.class, () -> UrlBaseDatos.desde("PGHOST=host-secreto"));
+
+		assertFalse(error.getMessage().contains("host-secreto"));
+	}
+
+	@Test
+	void rechazaUnValorVacio() {
+		var error = assertThrows(IllegalStateException.class, () -> UrlBaseDatos.desde("   "));
+
+		assertTrue(error.getMessage().contains("vacía"));
+	}
+
+	@Test
+	void describeLoRecibidoSinMostrarlo() {
+		var error = assertThrows(IllegalStateException.class, () -> UrlBaseDatos.desde("npg_SoloLaClave"));
+
+		assertTrue(error.getMessage().contains("15 caracteres"));
+		assertFalse(error.getMessage().contains("npg_SoloLaClave"));
 	}
 
 	@Test

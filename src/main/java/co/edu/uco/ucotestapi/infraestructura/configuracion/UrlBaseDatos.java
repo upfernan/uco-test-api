@@ -5,31 +5,48 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilTexto;
 
 /**
  * Convierte la DATABASE_URL que entregan Neon o Render al formato que entiende JDBC.
- * Acepta: postgresql://usuario:clave@host/base?sslmode=require, la misma con comillas o con el
- * prefijo "psql" (como la copia la consola de Neon) y el formato jdbc:postgresql://... ya listo.
- * Los mensajes de error nunca incluyen la cadena, porque trae la clave.
+ * Acepta cualquiera de los formatos que copia la consola de Neon: la cadena postgresql://..., con comillas,
+ * con el prefijo "psql", en formato .env (DATABASE_URL='...'), en formato jdbc:postgresql://... o como
+ * variables PGHOST, PGDATABASE, PGUSER y PGPASSWORD.
+ * Los mensajes de error nunca incluyen el valor recibido, porque trae la clave.
  */
 public record UrlBaseDatos(String jdbcUrl, String usuario, String clave) {
 
 	private static final int PUERTO_POSTGRES = 5432;
 	private static final String PARAMETRO_NO_SOPORTADO_POR_JDBC = "channel_binding";
 	private static final String FORMATO_ESPERADO = "postgresql://usuario:clave@host/base?sslmode=require";
+	private static final Pattern URL = Pattern.compile("(jdbc:)?postgres(ql)?://[^\\s'\"]+");
+	private static final Pattern VARIABLE_PG = Pattern
+			.compile("PG(HOST|PORT|DATABASE|USER|PASSWORD)\\s*=\\s*['\"]?([^'\"\\s]+)['\"]?");
 
 	public static UrlBaseDatos desde(final String valor) {
-		var limpio = limpiar(valor);
-		if (limpio.startsWith("jdbc:postgresql://")) {
-			return new UrlBaseDatos(limpio, UtilTexto.VACIO, UtilTexto.VACIO);
+		var texto = UtilTexto.aplicarTrim(valor);
+		if (texto.isEmpty()) {
+			throw new IllegalStateException("DATABASE_URL llegó vacía. Configure la cadena de conexión " + FORMATO_ESPERADO);
 		}
-		if (!limpio.startsWith("postgresql://") && !limpio.startsWith("postgres://")) {
-			throw new IllegalStateException("DATABASE_URL no tiene el formato esperado " + FORMATO_ESPERADO);
+		var url = URL.matcher(texto);
+		if (url.find()) {
+			return desdeUrl(url.group());
 		}
-		var uri = crearUri(limpio);
+		if (texto.contains("PGHOST")) {
+			return desdeVariablesPg(texto);
+		}
+		throw new IllegalStateException("DATABASE_URL no tiene el formato esperado " + FORMATO_ESPERADO + ". " + describir(texto));
+	}
+
+	private static UrlBaseDatos desdeUrl(final String texto) {
+		if (texto.startsWith("jdbc:")) {
+			return new UrlBaseDatos(texto, UtilTexto.VACIO, UtilTexto.VACIO);
+		}
+		var uri = crearUri(texto);
 		if (UtilTexto.esNula(uri.getHost()) || UtilTexto.esNula(uri.getRawUserInfo()) || !uri.getRawUserInfo().contains(":")) {
 			throw new IllegalStateException("DATABASE_URL debe incluir usuario, clave y host: " + FORMATO_ESPERADO);
 		}
@@ -44,16 +61,26 @@ public record UrlBaseDatos(String jdbcUrl, String usuario, String clave) {
 		return UtilTexto.tieneContenido(usuario);
 	}
 
-	private static String limpiar(final String valor) {
-		var texto = UtilTexto.aplicarTrim(valor);
-		if (texto.startsWith("psql ")) {
-			texto = texto.substring("psql ".length()).trim();
+	private static UrlBaseDatos desdeVariablesPg(final String texto) {
+		var variables = new HashMap<String, String>();
+		var coincidencia = VARIABLE_PG.matcher(texto);
+		while (coincidencia.find()) {
+			variables.put(coincidencia.group(1), coincidencia.group(2));
 		}
-		while (texto.length() >= 2 && (texto.startsWith("'") || texto.startsWith("\""))
-				&& texto.charAt(texto.length() - 1) == texto.charAt(0)) {
-			texto = texto.substring(1, texto.length() - 1).trim();
+		if (!variables.containsKey("HOST") || !variables.containsKey("USER") || !variables.containsKey("PASSWORD")) {
+			throw new IllegalStateException("DATABASE_URL trae variables PG* incompletas: faltan PGHOST, PGUSER o PGPASSWORD");
 		}
-		return texto;
+		var jdbcUrl = "jdbc:postgresql://" + variables.get("HOST") + ":"
+				+ variables.getOrDefault("PORT", String.valueOf(PUERTO_POSTGRES)) + "/"
+				+ variables.getOrDefault("DATABASE", "neondb") + "?sslmode=require";
+		return new UrlBaseDatos(jdbcUrl, variables.get("USER"), variables.get("PASSWORD"));
+	}
+
+	private static String describir(final String texto) {
+		return "Se recibieron " + texto.length() + " caracteres"
+				+ (texto.contains("://") ? ", con '://' pero sin el esquema postgresql" : ", sin '://'")
+				+ (texto.contains("@") ? ", con '@'" : ", sin '@'")
+				+ (texto.contains("\n") ? ", con saltos de línea" : "") + ".";
 	}
 
 	private static URI crearUri(final String texto) {
