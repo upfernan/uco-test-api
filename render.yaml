@@ -8,7 +8,7 @@ services:
     plan: free               # Gratis. Se duerme a los 15 min sin uso y tarda ~1 min en despertar.
     region: virginia
     branch: main
-    autoDeployTrigger: checksPass   # CD: solo despliega si el pipeline de GitHub Actions pasa.
+    autoDeployTrigger: "off"   # CD: despliega el trabajo "desplegar" de GitHub Actions cuando todo pasa.
     dockerfilePath: ./Dockerfile
     healthCheckPath: /actuator/health
     envVars:
@@ -22,7 +22,7 @@ services:
     plan: free
     region: virginia
     branch: main
-    autoDeployTrigger: checksPass
+    autoDeployTrigger: "off"
     rootDir: gateway
     dockerfilePath: ./Dockerfile
     healthCheckPath: /actuator/health

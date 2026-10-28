@@ -101,3 +101,26 @@ jobs:
 
       - name: Construir la imagen
         run: docker build -t uco-test-api:ci .
+
+  desplegar:
+    name: Desplegar en Render (CD)
+    runs-on: ubuntu-latest
+    needs: [compilar-y-probar, gateway, imagen-docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Desplegar la API
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_API }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then echo "Falta el secreto RENDER_DEPLOY_HOOK_API"; exit 1; fi
+          curl -fsS -X POST "$DEPLOY_HOOK" > /dev/null
+          echo "Render recibió la orden de desplegar la API"
+
+      - name: Desplegar el gateway
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_GATEWAY }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then echo "Falta el secreto RENDER_DEPLOY_HOOK_GATEWAY"; exit 1; fi
+          curl -fsS -X POST "$DEPLOY_HOOK" > /dev/null
+          echo "Render recibió la orden de desplegar el gateway"
