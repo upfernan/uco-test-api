@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
-import co.edu.uco.ucotestapi.dominio.excepciones.ReglaNegocioException;
-import co.edu.uco.ucotestapi.servicios.output.ports.serviciosexternos.messagecatalog.CodigoMensaje;
-import co.edu.uco.ucotestapi.dominio.enums.EstadoGrupo;
-import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.GrupoRepositorio;
-import co.edu.uco.ucotestapi.servicios.output.ports.repositorios.entidades.GrupoEntidad;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CatalogoMensajesProveedor;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
+import co.edu.uco.ucotestapi.transversal.enumeracion.EstadoGrupo;
+import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.GrupoRepositorio;
+import co.edu.uco.ucotestapi.infraestructura.persistencia.repositorio.entidad.GrupoEntidad;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilFecha;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilObjeto;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilUUID;
@@ -25,10 +25,10 @@ public class GrupoDominio {
 	// Regla 8
 	public void validarGrupoExista() {
 		if (UtilUUID.esValorDefecto(id)) {
-			throw new ReglaNegocioException(CodigoMensaje.GRUPO_ID_NULO);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.GRUPO_ID_NULO);
 		}
 		if (!grupoRepositorio.existePorId(id)) {
-			throw new ReglaNegocioException(CodigoMensaje.GRUPO_NO_EXISTE, id);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.GRUPO_NO_EXISTE, id);
 		}
 	}
 
@@ -36,12 +36,12 @@ public class GrupoDominio {
 	public void validarGrupoVigente() {
 		var grupo = obtenerGrupo();
 		if (grupo.getEstado() != EstadoGrupo.ACTIVO) {
-			throw new ReglaNegocioException(CodigoMensaje.GRUPO_NO_ACTIVO, id);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.GRUPO_NO_ACTIVO, id);
 		}
 		var hoy = LocalDate.now();
 		if (UtilFecha.esNula(grupo.getFechaInicio()) || UtilFecha.esNula(grupo.getFechaFin())
 				|| hoy.isBefore(grupo.getFechaInicio()) || hoy.isAfter(grupo.getFechaFin())) {
-			throw new ReglaNegocioException(CodigoMensaje.GRUPO_NO_VIGENTE, id);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.GRUPO_NO_VIGENTE, id);
 		}
 	}
 
@@ -49,14 +49,14 @@ public class GrupoDominio {
 	public void validarDocenteAsignado(UUID idDocente) {
 		var docente = obtenerGrupo().getDocente();
 		if (UtilUUID.esValorDefecto(idDocente) || UtilObjeto.esNulo(docente) || !idDocente.equals(docente.getId())) {
-			throw new ReglaNegocioException(CodigoMensaje.DOCENTE_NO_ASIGNADO_AL_GRUPO, idDocente, id);
+			throw CatalogoMensajesProveedor.excepcion(CodigoMensaje.DOCENTE_NO_ASIGNADO_AL_GRUPO, idDocente, id);
 		}
 	}
 
 	private GrupoEntidad obtenerGrupo() {
 		validarGrupoExista();
 		return grupoRepositorio.consultarPorId(id).orElseThrow(
-				() -> new ReglaNegocioException(CodigoMensaje.GRUPO_NO_EXISTE, id));
+				() -> CatalogoMensajesProveedor.excepcion(CodigoMensaje.GRUPO_NO_EXISTE, id));
 	}
 
 }
