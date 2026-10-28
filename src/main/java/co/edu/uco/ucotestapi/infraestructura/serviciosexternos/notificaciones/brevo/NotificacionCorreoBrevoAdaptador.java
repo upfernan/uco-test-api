@@ -8,17 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
+import co.edu.uco.ucotestapi.funcionalidades.cuenta.solicitarrecuperacionclave.aplicacion.puertosalida.CodigoRecuperacionDTO;
 import co.edu.uco.ucotestapi.funcionalidades.notaestudiante.registrarnotaestudiante.aplicacion.puertosalida.NotificacionDTO;
-import co.edu.uco.ucotestapi.funcionalidades.notaestudiante.registrarnotaestudiante.aplicacion.puertosalida.NotificacionPuertoSalida;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.notificaciones.NotificadorCorreo;
 import co.edu.uco.ucotestapi.transversal.utilitario.UtilTexto;
 
 /**
- * Envia la notificacion por correo con la API transaccional de Brevo.
+ * Envia los correos (aviso de nota y codigo de recuperacion) con la API transaccional de Brevo.
  * Si se configura un correo para redirigir, todos los avisos llegan ahi (sirve para las demostraciones,
  * porque los correos demo terminan en .test y no existen).
  * Una falla al enviar nunca debe tumbar el registro de la nota, por eso no propaga excepciones.
  */
-public class NotificacionCorreoBrevoAdaptador implements NotificacionPuertoSalida {
+public class NotificacionCorreoBrevoAdaptador implements NotificadorCorreo {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NotificacionCorreoBrevoAdaptador.class);
 
 	private final RestClient cliente;
@@ -39,9 +40,19 @@ public class NotificacionCorreoBrevoAdaptador implements NotificacionPuertoSalid
 
 	@Override
 	public void notificar(final NotificacionDTO notificacion) {
-		var para = UtilTexto.tieneContenido(redirigirA) ? redirigirA : UtilTexto.aplicarTrim(notificacion.correoDestinatario());
+		enviarCorreo(notificacion.correoDestinatario(), notificacion.nombreDestinatario(), notificacion.asunto(),
+				notificacion.contenido());
+	}
+
+	@Override
+	public void enviar(final CodigoRecuperacionDTO codigo) {
+		enviarCorreo(codigo.correoDestinatario(), codigo.correoDestinatario(), codigo.asunto(), codigo.contenido());
+	}
+
+	private void enviarCorreo(final String correo, final String nombre, final String asunto, final String contenido) {
+		var para = UtilTexto.tieneContenido(redirigirA) ? redirigirA : UtilTexto.aplicarTrim(correo);
 		if (!UtilTexto.tieneContenido(para)) {
-			LOGGER.warn("No se envió el correo \"{}\": el destinatario no tiene correo", notificacion.asunto());
+			LOGGER.warn("No se envió el correo \"{}\": el destinatario no tiene correo", asunto);
 			return;
 		}
 		try {
@@ -49,21 +60,21 @@ public class NotificacionCorreoBrevoAdaptador implements NotificacionPuertoSalid
 					.uri(url)
 					.header("api-key", claveApi)
 					.contentType(MediaType.APPLICATION_JSON)
-					.body(cuerpo(para, notificacion))
+					.body(cuerpo(para, UtilTexto.obtenerValorDefecto(nombre, para), asunto, contenido))
 					.retrieve()
 					.toBodilessEntity();
-			LOGGER.info("Correo enviado: {}", notificacion.asunto());
+			LOGGER.info("Correo enviado: {}", asunto);
 		} catch (RuntimeException excepcion) {
-			LOGGER.error("No se pudo enviar el correo \"{}\": {}", notificacion.asunto(), excepcion.getMessage());
+			LOGGER.error("No se pudo enviar el correo \"{}\": {}", asunto, excepcion.getMessage());
 		}
 	}
 
-	private Map<String, Object> cuerpo(final String para, final NotificacionDTO notificacion) {
+	private Map<String, Object> cuerpo(final String para, final String nombre, final String asunto, final String contenido) {
 		return Map.of(
 				"sender", Map.of("name", nombreRemitente, "email", correoRemitente),
-				"to", List.of(Map.of("email", para, "name", UtilTexto.obtenerValorDefecto(notificacion.nombreDestinatario(), para))),
-				"subject", notificacion.asunto(),
-				"textContent", notificacion.contenido());
+				"to", List.of(Map.of("email", para, "name", nombre)),
+				"subject", asunto,
+				"textContent", contenido);
 	}
 
 	public record PropiedadesBrevo(String url, String claveApi, String correoRemitente, String nombreRemitente,

@@ -1,0 +1,47 @@
+.encabezado {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.encabezado h1 {
+  font-size: 1.7rem;
+}
+
+.encabezado p {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 22px;
+}
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.estado {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--exito-fondo);
+  color: var(--exito-texto);
+}
+
+.estado.inactivo {
+  background: var(--error-fondo);
+  color: var(--error-texto);
+}
+
+.vacio {
+  color: var(--texto-suave);
+}

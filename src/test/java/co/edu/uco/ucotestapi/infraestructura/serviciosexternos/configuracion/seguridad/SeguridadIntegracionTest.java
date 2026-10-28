@@ -37,8 +37,14 @@ class SeguridadIntegracionTest {
 	}
 
 	@Test
-	void laRaizSinPaginaResponde404YNo500() throws Exception {
-		mvc.perform(get("/"))
+	void laPaginaWebEsPublica() throws Exception {
+		mvc.perform(get("/")).andExpect(status().isOk());
+		mvc.perform(get("/favicon.ico")).andExpect(status().isOk());
+	}
+
+	@Test
+	void unArchivoQueNoExisteResponde404YNo500() throws Exception {
+		mvc.perform(get("/no-existe.js"))
 				.andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.mensajes[0]").value("El recurso solicitado no existe"));
 	}

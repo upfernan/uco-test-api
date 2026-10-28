@@ -60,6 +60,13 @@ class GatewayIntegracionTest {
 	}
 
 	@Test
+	void reenviaLaPaginaWeb() throws Exception {
+		var respuesta = enviar(HttpRequest.newBuilder(uri("/app.js")).GET(), "10.0.0.4");
+
+		assertEquals("GET /app.js", respuesta.body());
+	}
+
+	@Test
 	void noReenviaRutasFueraDeLaApi() throws Exception {
 		var respuesta = enviar(HttpRequest.newBuilder(uri("/otra-cosa")).GET(), "10.0.0.3");
 

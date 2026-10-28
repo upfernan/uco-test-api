@@ -18,6 +18,9 @@ public final class CatalogoParametros {
 	public static final int NOTA_VALOR_MINIMO = 0;
 	public static final int NOTA_VALOR_MAXIMO = 500;
 	public static final int NOTA_MAXIMO_DECIMALES = 2;
+	public static final int RECUPERACION_CLAVE_DIGITOS = 6;
+	public static final int RECUPERACION_CLAVE_MINUTOS_VIGENCIA = 15;
+	public static final int RECUPERACION_CLAVE_MAXIMO_INTENTOS = 5;
 
 	private CatalogoParametros() {
 		super();

@@ -1,0 +1,54 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.boton {
+  margin-top: 4px;
+  width: 100%;
+}
+
+.enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: var(--texto-suave);
+}
+
+.derecha {
+  align-self: flex-end;
+  font-size: 0.88rem;
+  margin-top: -6px;
+}
+
+.clave {
+  position: relative;
+}
+
+.clave input {
+  padding-right: 76px;
+}
+
+.ver {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--principal);
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.pista {
+  margin: -6px 0 0;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--texto-suave);
+}

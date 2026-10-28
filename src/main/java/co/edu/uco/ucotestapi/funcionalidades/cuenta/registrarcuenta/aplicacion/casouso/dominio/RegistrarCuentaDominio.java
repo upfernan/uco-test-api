@@ -2,7 +2,7 @@ package co.edu.uco.ucotestapi.funcionalidades.cuenta.registrarcuenta.aplicacion.
 
 import java.util.Locale;
 
-import co.edu.uco.ucotestapi.funcionalidades.cuenta.registrarcuenta.aplicacion.casouso.dominio.validador.ValidarClaveCuenta;
+import co.edu.uco.ucotestapi.aplicacion.casouso.validador.generales.cuenta.ValidarClaveSegura;
 import co.edu.uco.ucotestapi.funcionalidades.cuenta.registrarcuenta.aplicacion.casouso.dominio.validador.ValidarCorreoCuenta;
 import co.edu.uco.ucotestapi.funcionalidades.cuenta.registrarcuenta.aplicacion.casouso.dominio.validador.ValidarNombreCuenta;
 import co.edu.uco.ucotestapi.funcionalidades.cuenta.registrarcuenta.aplicacion.casouso.dominio.validador.ValidarRolCuenta;
@@ -57,7 +57,7 @@ public class RegistrarCuentaDominio {
 
 	private void setClave(final String clave) {
 		this.clave = UtilTexto.obtenerValorDefecto(clave);
-		ValidarClaveCuenta.ejecutarValidacion(this.clave);
+		ValidarClaveSegura.ejecutarValidacion(this.clave);
 	}
 
 }
