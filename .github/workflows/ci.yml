@@ -58,6 +58,38 @@ jobs:
         if: ${{ env.SONAR_TOKEN != '' }}
         run: mvn -B sonar:sonar
 
+  gateway:
+    name: Compilar y probar el API Gateway
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v5
+
+      - name: Instalar Java 27
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "27"
+          cache: maven
+
+      - name: Compilar y pruebas del gateway
+        run: mvn -B -f gateway/pom.xml verify
+
+      - name: Construir la imagen del gateway
+        run: docker build -t uco-test-gateway:ci gateway
+
   imagen-docker:
     name: Construir imagen Docker
     runs-on: ubuntu-latest

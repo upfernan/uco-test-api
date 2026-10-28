@@ -14,3 +14,20 @@ services:
     envVars:
       - key: DATABASE_URL
         sync: false
+
+  # API Gateway: la puerta de entrada. Reenvia /api/** a la API y limita las peticiones por IP.
+  - type: web
+    name: uco-test-gateway
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    autoDeployTrigger: checksPass
+    rootDir: gateway
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: API_URL
+        value: https://uco-test-api.onrender.com
+      - key: REDIS_URL
+        sync: false
