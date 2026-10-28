@@ -1,6 +1,5 @@
 package co.edu.uco.ucotestapi.infraestructura.controlador;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.uco.ucotestapi.funcionalidades.nota.consultarnotasgrupo.aplicacion.puertoentrada.ConsultarNotasGrupoPuertoEntrada;
 import co.edu.uco.ucotestapi.funcionalidades.nota.consultarnotasgrupo.aplicacion.puertoentrada.dto.NotaGrupoDTO;
-import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaExito;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CatalogoMensajesProveedor;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
+import co.edu.uco.ucotestapi.transversal.respuesta.Respuesta;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,8 +24,9 @@ public class NotaControlador {
 	}
 
 	@GetMapping("/grupos/{idGrupo}/notas")
-	public ResponseEntity<RespuestaExito<List<NotaGrupoDTO>>> consultarNotasGrupo(@PathVariable final UUID idGrupo) {
-		return ResponseEntity.ok(RespuestaExito.crear("Notas (actividades) del grupo", consultarNotasGrupo.ejecutar(idGrupo)));
+	public ResponseEntity<Respuesta<NotaGrupoDTO>> consultarNotasGrupo(@PathVariable final UUID idGrupo) {
+		return ResponseEntity.ok(Respuesta.crearExitosa(consultarNotasGrupo.ejecutar(idGrupo))
+				.agregarMensaje(CatalogoMensajesProveedor.contenido(CodigoMensaje.NOTAS_GRUPO_CONSULTADAS)));
 	}
 
 }

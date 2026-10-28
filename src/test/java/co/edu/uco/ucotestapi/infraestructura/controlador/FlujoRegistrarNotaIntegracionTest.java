@@ -76,7 +76,7 @@ class FlujoRegistrarNotaIntegracionTest {
 	void elDocenteConsultaSusGruposYRegistraUnaNota() throws Exception {
 		registrar("Docente Flujo", correoDocente, "DOCENTE")
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.datos.idPersona").value(idDocente.toString()));
+				.andExpect(jsonPath("$.datos[0].idPersona").value(idDocente.toString()));
 		var token = iniciarSesion(correoDocente);
 
 		conToken(get("/api/v1/docentes/" + idDocente + "/grupos"), token)
@@ -91,7 +91,9 @@ class FlujoRegistrarNotaIntegracionTest {
 
 		registrarNota(token, idNotaAbierta, "3.5")
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.mensaje").value("La nota se registró correctamente"));
+				.andExpect(jsonPath("$.respuestaExitosa").value(true))
+				.andExpect(jsonPath("$.datos").isEmpty())
+				.andExpect(jsonPath("$.mensajes[0]").value("La nota se registró correctamente"));
 		entityManager.flush();
 		assertEquals(350, jdbc.queryForObject("SELECT valor FROM nota_estudiante WHERE id_nota = ?", Integer.class,
 				idNotaAbierta));
@@ -105,7 +107,7 @@ class FlujoRegistrarNotaIntegracionTest {
 	void elEstudianteSeRegistraYConsultaLasNotasDelGrupo() throws Exception {
 		registrar("Estudiante Flujo", correoEstudiante, "ESTUDIANTE")
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.datos.idPersona").value(idEstudiante.toString()));
+				.andExpect(jsonPath("$.datos[0].idPersona").value(idEstudiante.toString()));
 		var token = iniciarSesion(correoEstudiante);
 
 		conToken(get("/api/v1/grupos/" + idGrupo + "/notas"), token).andExpect(status().isOk());
@@ -117,7 +119,8 @@ class FlujoRegistrarNotaIntegracionTest {
 
 		registrar("Docente Flujo", correoDocente, "DOCENTE")
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.mensaje").value(containsString("Ya existe una cuenta")));
+				.andExpect(jsonPath("$.respuestaExitosa").value(false))
+				.andExpect(jsonPath("$.mensajes[0]").value(containsString("Ya existe una cuenta")));
 		mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
 				.content("{\"correo\":\"" + correoDocente + "\",\"clave\":\"Otra2026\"}"))
 				.andExpect(status().isBadRequest());
@@ -140,7 +143,7 @@ class FlujoRegistrarNotaIntegracionTest {
 				.content("{\"correo\":\"" + correo + "\",\"clave\":\"" + CLAVE + "\"}"))
 				.andExpect(status().isOk())
 				.andReturn().getResponse().getContentAsString();
-		return JsonPath.read(respuesta, "$.datos.token");
+		return JsonPath.read(respuesta, "$.datos[0].token");
 	}
 
 	private ResultActions registrarNota(final String token, final UUID idNota, final String valor) throws Exception {

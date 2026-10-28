@@ -25,5 +25,5 @@ body:json {
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains dos decimales
+  res.body.mensajes[0]: contains dos decimales
 }

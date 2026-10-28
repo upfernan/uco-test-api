@@ -13,7 +13,9 @@ import co.edu.uco.ucotestapi.funcionalidades.cuenta.registrarcuenta.aplicacion.p
 import co.edu.uco.ucotestapi.funcionalidades.cuenta.iniciarsesion.aplicacion.puertoentrada.dto.SesionIniciadaDTO;
 import co.edu.uco.ucotestapi.funcionalidades.cuenta.iniciarsesion.aplicacion.puertoentrada.IniciarSesionPuertoEntrada;
 import co.edu.uco.ucotestapi.funcionalidades.cuenta.registrarcuenta.aplicacion.puertoentrada.RegistrarCuentaPuertoEntrada;
-import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaExito;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CatalogoMensajesProveedor;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
+import co.edu.uco.ucotestapi.transversal.respuesta.Respuesta;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -27,14 +29,16 @@ public class AutenticacionControlador {
 	}
 
 	@PostMapping("/registro")
-	public ResponseEntity<RespuestaExito<CuentaRegistradaDTO>> registrar(@RequestBody RegistrarCuentaDTO datos) {
-		return new ResponseEntity<>(RespuestaExito.crear("La cuenta se registró correctamente", registrarCuenta.ejecutar(datos)),
-				HttpStatus.CREATED);
+	public ResponseEntity<Respuesta<CuentaRegistradaDTO>> registrar(@RequestBody RegistrarCuentaDTO datos) {
+		var respuesta = Respuesta.crearExitosa(registrarCuenta.ejecutar(datos))
+				.agregarMensaje(CatalogoMensajesProveedor.contenido(CodigoMensaje.CUENTA_REGISTRADA));
+		return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<RespuestaExito<SesionIniciadaDTO>> iniciarSesion(@RequestBody IniciarSesionDTO datos) {
-		return ResponseEntity.ok(RespuestaExito.crear("Sesión iniciada", iniciarSesion.ejecutar(datos)));
+	public ResponseEntity<Respuesta<SesionIniciadaDTO>> iniciarSesion(@RequestBody IniciarSesionDTO datos) {
+		return ResponseEntity.ok(Respuesta.crearExitosa(iniciarSesion.ejecutar(datos))
+				.agregarMensaje(CatalogoMensajesProveedor.contenido(CodigoMensaje.SESION_INICIADA)));
 	}
 
 }

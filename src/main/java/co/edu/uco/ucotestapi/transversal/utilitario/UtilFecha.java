@@ -2,14 +2,21 @@ package co.edu.uco.ucotestapi.transversal.utilitario;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 public final class UtilFecha {
 
 	public static final LocalDate FECHA_DEFECTO = LocalDate.of(1900, 1, 1);
 	public static final Instant INSTANTE_DEFECTO = Instant.EPOCH;
+	// Una sola zona para todo: en Render el servidor esta en UTC y en local en -05
+	public static final ZoneId ZONA_HORARIA = ZoneId.of("America/Bogota");
 
 	private UtilFecha() {
 		super();
+	}
+
+	public static LocalDate hoy() {
+		return LocalDate.now(ZONA_HORARIA);
 	}
 
 	public static boolean esNula(final LocalDate fecha) {

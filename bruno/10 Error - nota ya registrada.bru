@@ -25,5 +25,6 @@ body:json {
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains ya tiene registrada
+  res.body.respuestaExitosa: eq false
+  res.body.mensajes[0]: contains ya tiene registrada
 }

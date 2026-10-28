@@ -1,6 +1,5 @@
 package co.edu.uco.ucotestapi.infraestructura.controlador;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,9 @@ import co.edu.uco.ucotestapi.funcionalidades.grupo.consultarestudiantesgrupo.apl
 import co.edu.uco.ucotestapi.funcionalidades.grupo.consultarestudiantesgrupo.aplicacion.puertoentrada.dto.EstudianteGrupoDTO;
 import co.edu.uco.ucotestapi.funcionalidades.grupo.consultargruposdocente.aplicacion.puertoentrada.ConsultarGruposDocentePuertoEntrada;
 import co.edu.uco.ucotestapi.funcionalidades.grupo.consultargruposdocente.aplicacion.puertoentrada.dto.GrupoDocenteDTO;
-import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaExito;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CatalogoMensajesProveedor;
+import co.edu.uco.ucotestapi.infraestructura.serviciosexternos.catalogomensajes.CodigoMensaje;
+import co.edu.uco.ucotestapi.transversal.respuesta.Respuesta;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -28,13 +29,15 @@ public class GrupoControlador {
 	}
 
 	@GetMapping("/docentes/{idDocente}/grupos")
-	public ResponseEntity<RespuestaExito<List<GrupoDocenteDTO>>> consultarGruposDocente(@PathVariable final UUID idDocente) {
-		return ResponseEntity.ok(RespuestaExito.crear("Grupos del docente", consultarGruposDocente.ejecutar(idDocente)));
+	public ResponseEntity<Respuesta<GrupoDocenteDTO>> consultarGruposDocente(@PathVariable final UUID idDocente) {
+		return ResponseEntity.ok(Respuesta.crearExitosa(consultarGruposDocente.ejecutar(idDocente))
+				.agregarMensaje(CatalogoMensajesProveedor.contenido(CodigoMensaje.GRUPOS_DOCENTE_CONSULTADOS)));
 	}
 
 	@GetMapping("/grupos/{idGrupo}/estudiantes")
-	public ResponseEntity<RespuestaExito<List<EstudianteGrupoDTO>>> consultarEstudiantesGrupo(@PathVariable final UUID idGrupo) {
-		return ResponseEntity.ok(RespuestaExito.crear("Estudiantes del grupo", consultarEstudiantesGrupo.ejecutar(idGrupo)));
+	public ResponseEntity<Respuesta<EstudianteGrupoDTO>> consultarEstudiantesGrupo(@PathVariable final UUID idGrupo) {
+		return ResponseEntity.ok(Respuesta.crearExitosa(consultarEstudiantesGrupo.ejecutar(idGrupo))
+				.agregarMensaje(CatalogoMensajesProveedor.contenido(CodigoMensaje.ESTUDIANTES_GRUPO_CONSULTADOS)));
 	}
 
 }

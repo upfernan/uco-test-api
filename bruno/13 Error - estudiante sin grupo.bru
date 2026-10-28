@@ -25,5 +25,5 @@ body:json {
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains no pertenece al grupo
+  res.body.mensajes[0]: contains no pertenece al grupo
 }

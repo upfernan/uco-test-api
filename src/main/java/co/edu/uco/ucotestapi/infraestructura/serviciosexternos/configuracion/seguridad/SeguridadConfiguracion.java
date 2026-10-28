@@ -1,6 +1,5 @@
 package co.edu.uco.ucotestapi.infraestructura.serviciosexternos.configuracion.seguridad;
 
-import co.edu.uco.ucotestapi.transversal.respuesta.RespuestaError;
 import co.edu.uco.ucotestapi.infraestructura.persistencia.configuracion.UrlBaseDatos;
 
 import javax.crypto.SecretKey;
