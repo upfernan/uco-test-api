@@ -85,6 +85,7 @@ class RegistrarNotaEstudianteCasoUsoImplTest {
 		var estudiante = new EstudianteEntidad();
 		estudiante.setId(ID_ESTUDIANTE);
 		estudiante.setNombre("Estudiante Demo");
+		estudiante.setCorreo("estudiante.demo@uco-test-api.test");
 		var estudianteGrupo = new EstudianteGrupoEntidad();
 		estudianteGrupo.setId(UUID.randomUUID());
 		estudianteGrupo.setEstudiante(estudiante);
@@ -120,6 +121,7 @@ class RegistrarNotaEstudianteCasoUsoImplTest {
 		var aviso = ArgumentCaptor.forClass(NotificacionDTO.class);
 		verify(notificacion).notificar(aviso.capture());
 		assertEquals("Hola Estudiante Demo, se registró tu nota en Parcial 1: 3.50", aviso.getValue().contenido());
+		assertEquals("estudiante.demo@uco-test-api.test", aviso.getValue().correoDestinatario());
 	}
 
 	@Test
