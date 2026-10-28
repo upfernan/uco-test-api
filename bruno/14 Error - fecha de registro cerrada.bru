@@ -1,26 +1,29 @@
 meta {
-  name: Error - nota ya registrada
+  name: Error - fecha de registro cerrada
   type: http
-  seq: 6
+  seq: 14
 }
 
 post {
   url: {{baseUrl}}/api/v1/notas-estudiantes
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 body:json {
   {
-    "idDocente": "{{idDocente}}",
     "idGrupo": "{{idGrupo}}",
     "idEstudiante": "{{idEstudiante}}",
-    "idNota": "{{idNota}}",
-    "valor": 3.5
+    "idNota": "{{idNotaCerrada}}",
+    "valor": 4
   }
 }
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains ya tiene registrada
+  res.body.mensaje: contains no está vigente
 }

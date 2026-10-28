@@ -21,6 +21,9 @@ public class DocenteEntidadJPA {
 	@Column(name = "nombre")
 	private String nombre;
 
+	@Column(name = "correo")
+	private String correo;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "estado")
 	private EstadoDocente estado;
@@ -38,6 +41,14 @@ public class DocenteEntidadJPA {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 
 

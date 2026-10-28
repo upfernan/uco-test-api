@@ -1,26 +1,29 @@
 meta {
-  name: Error - nota mayor a 5
+  name: Error - tres decimales
   type: http
-  seq: 8
+  seq: 11
 }
 
 post {
   url: {{baseUrl}}/api/v1/notas-estudiantes
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 body:json {
   {
-    "idDocente": "{{idDocente}}",
     "idGrupo": "{{idGrupo}}",
     "idEstudiante": "{{idEstudiante}}",
     "idNota": "{{idNota}}",
-    "valor": 5.01
+    "valor": 3.555
   }
 }
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains entre 0 y 5
+  res.body.mensaje: contains dos decimales
 }

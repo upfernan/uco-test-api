@@ -1,0 +1,25 @@
+meta {
+  name: Error - clave insegura al registrarse
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/registro
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Ana Ruiz",
+    "correo": "ana.ruiz@uco-test-api.test",
+    "clave": "corta",
+    "rol": "DOCENTE"
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.mensaje: contains mínimo 8 caracteres
+}

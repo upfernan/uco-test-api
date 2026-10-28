@@ -1,13 +1,17 @@
 meta {
   name: Estudiantes del grupo
   type: http
-  seq: 3
+  seq: 7
 }
 
 get {
   url: {{baseUrl}}/api/v1/grupos/{{idGrupo}}/estudiantes
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 assert {

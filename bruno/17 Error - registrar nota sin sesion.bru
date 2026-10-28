@@ -1,7 +1,7 @@
 meta {
-  name: Error - estudiante sin grupo
+  name: Error - registrar nota sin sesion
   type: http
-  seq: 10
+  seq: 17
 }
 
 post {
@@ -12,15 +12,13 @@ post {
 
 body:json {
   {
-    "idDocente": "{{idDocente}}",
     "idGrupo": "{{idGrupo}}",
-    "idEstudiante": "{{idEstudianteSinGrupo}}",
+    "idEstudiante": "{{idEstudiante}}",
     "idNota": "{{idNota}}",
     "valor": 4
   }
 }
 
 assert {
-  res.status: eq 400
-  res.body.mensaje: contains no pertenece al grupo
+  res.status: eq 401
 }

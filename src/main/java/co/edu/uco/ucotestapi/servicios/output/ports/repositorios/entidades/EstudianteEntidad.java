@@ -5,6 +5,7 @@ import java.util.UUID;
 public class EstudianteEntidad {
 	private UUID id;
 	private String nombre;
+	private String correo;
 
 	public UUID getId() {
 		return id;
@@ -19,6 +20,14 @@ public class EstudianteEntidad {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 
 

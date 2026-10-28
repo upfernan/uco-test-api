@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.edu.uco.ucotestapi.infraestructura.configuracion.ClaimsToken;
+import co.edu.uco.ucotestapi.servicios.input.dto.request.RegistrarNotaRequestDTO;
 import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.ConsultarEstudiantesGrupoCasoUso;
 import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.ConsultarGruposDocenteCasoUso;
 import co.edu.uco.ucotestapi.servicios.input.ports.notaestudiante.ConsultarNotasGrupoCasoUso;
@@ -41,8 +45,11 @@ public class NotaEstudianteControlador {
 	}
 
 	@PostMapping("/notas-estudiantes")
-	public ResponseEntity<RespuestaExito<Void>> registrarNota(@RequestBody RegistrarNotaEstudianteDTO datos) {
-		registrarNotaEstudiante.ejecutar(datos);
+	public ResponseEntity<RespuestaExito<Void>> registrarNota(@AuthenticationPrincipal Jwt sesion,
+			@RequestBody RegistrarNotaRequestDTO datos) {
+		var idDocente = UUID.fromString(sesion.getClaimAsString(ClaimsToken.ID_PERSONA));
+		registrarNotaEstudiante.ejecutar(new RegistrarNotaEstudianteDTO(idDocente, datos.idGrupo(), datos.idEstudiante(),
+				datos.idNota(), datos.valor()));
 		return new ResponseEntity<>(RespuestaExito.crear("La nota se registró correctamente", null), HttpStatus.CREATED);
 	}
 

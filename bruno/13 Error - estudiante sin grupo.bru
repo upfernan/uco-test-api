@@ -1,20 +1,23 @@
 meta {
-  name: Error - docente inactivo
+  name: Error - estudiante sin grupo
   type: http
-  seq: 9
+  seq: 13
 }
 
 post {
   url: {{baseUrl}}/api/v1/notas-estudiantes
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 body:json {
   {
-    "idDocente": "{{idDocenteInactivo}}",
     "idGrupo": "{{idGrupo}}",
-    "idEstudiante": "{{idEstudiante}}",
+    "idEstudiante": "{{idEstudianteSinGrupo}}",
     "idNota": "{{idNota}}",
     "valor": 4
   }
@@ -22,5 +25,5 @@ body:json {
 
 assert {
   res.status: eq 400
-  res.body.mensaje: contains no está activo
+  res.body.mensaje: contains no pertenece al grupo
 }

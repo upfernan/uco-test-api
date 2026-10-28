@@ -1,13 +1,17 @@
 meta {
   name: Notas del grupo
   type: http
-  seq: 4
+  seq: 8
 }
 
 get {
   url: {{baseUrl}}/api/v1/grupos/{{idGrupo}}/notas
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
 }
 
 assert {

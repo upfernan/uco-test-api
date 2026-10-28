@@ -1,0 +1,27 @@
+meta {
+  name: Iniciar sesion docente
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoDocente}}",
+    "clave": "{{claveDemo}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.datos.rol: eq DOCENTE
+}
+
+script:post-response {
+  bru.setVar("tokenDocente", res.body.datos.token);
+}

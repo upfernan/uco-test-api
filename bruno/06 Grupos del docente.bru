@@ -1,0 +1,19 @@
+meta {
+  name: Grupos del docente
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/v1/docentes/11111111-1111-1111-1111-111111111111/grupos
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDocente}}
+}
+
+assert {
+  res.status: eq 200
+}

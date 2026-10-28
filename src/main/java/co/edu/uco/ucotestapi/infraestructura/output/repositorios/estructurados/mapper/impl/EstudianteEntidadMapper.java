@@ -19,6 +19,7 @@ public class EstudianteEntidadMapper implements EntidadMapper<EstudianteEntidad,
 		var entidad = new EstudianteEntidad();
 		entidad.setId(entidadJPA.getId());
 		entidad.setNombre(entidadJPA.getNombre());
+		entidad.setCorreo(entidadJPA.getCorreo());
 		return entidad;
 	}
 
@@ -30,6 +31,7 @@ public class EstudianteEntidadMapper implements EntidadMapper<EstudianteEntidad,
 		var entidadJPA = new EstudianteEntidadJPA();
 		entidadJPA.setId(entidad.getId());
 		entidadJPA.setNombre(entidad.getNombre());
+		entidadJPA.setCorreo(entidad.getCorreo());
 		return entidadJPA;
 	}
 
